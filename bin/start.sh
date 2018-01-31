@@ -13,7 +13,7 @@ then
    echo "[pgbouncer]" >> "$CONFIG_FILE"
    echo "listen_addr = \"$LISTEN_ADDR\"" >> "$CONFIG_FILE"
    echo "auth_file = \"$AUTH_FILE\""  >> "$CONFIG_FILE"
-   if [ -n $AUTH_HBA_FILE ]
+   if [ -n "$AUTH_HBA_FILE" ]
    then
       echo "auth_type = hba" >> "$CONFIG_FILE"
       echo "auth_hba_file = \"$AUTH_HBA_FILE\""  >> "$CONFIG_FILE"
@@ -36,7 +36,7 @@ then
    done
 fi
 
-if [ ! -e "$AUTH_HBA_FILE" ] && [ -n $AUTH_HBA ]
+if [ ! -e "$AUTH_HBA_FILE" ] && [ -n "$AUTH_HBA" ]
 then
    mkdir -p "$(dirname "$AUTH_HBA_FILE")"
    IFS=, read -ra hba_rows <<< "$AUTH_HBA"
