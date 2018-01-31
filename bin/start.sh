@@ -2,6 +2,7 @@
 
 if [ ! -e "$CONFIG_FILE" ]
 then
+   mkdir -p "$(dirname "$CONFIG_FILE")"
    echo "[databases]" > "$CONFIG_FILE"
    IFS=, read -ra db_rows <<< "$DATABASES"
    for db in "${db_rows[@]}"
@@ -26,6 +27,7 @@ fi
 
 if [ ! -e "$AUTH_FILE" ]
 then
+   mkdir -p "$(dirname "$AUTH_FILE")"
    IFS=, read -ra auth_rows <<< "$AUTH"
    for auth in "${auth_rows[@]}"
    do
@@ -35,6 +37,7 @@ fi
 
 if [ ! -e "$AUTH_HBA_FILE" ] && [ -n $AUTH_HBA ]
 then
+   mkdir -p "$(dirname "$AUTH_HBA_FILE")"
    IFS=, read -ra hba_rows <<< "$AUTH_HBA"
    for hba in "${hba_rows[@]}"
    do
