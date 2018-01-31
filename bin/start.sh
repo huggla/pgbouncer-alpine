@@ -18,6 +18,7 @@ then
       echo "auth_type = hba" >> "$CONFIG_FILE"
       echo "auth_hba_file = \"$AUTH_HBA_FILE\""  >> "$CONFIG_FILE"
    fi
+   echo "unix_socket_dir = \"$UNIX_SOCKET_DIR\"" >> "$CONFIG_FILE"
    IFS=, read -ra configs <<< "$ADDITIONAL_CONFIGURATION"
    for conf in "${configs[@]}"
    do
@@ -43,6 +44,11 @@ then
    do
       echo "$hba" >> "$AUTH_HBA_FILE"
    done
+fi
+
+if [ ! -e "$UNIX_SOCKET_DIR" ]
+then
+   mkdir -p "$UNIX_SOCKET_DIR"
 fi
 
 pgbouncer "$CONFIG_FILE"
