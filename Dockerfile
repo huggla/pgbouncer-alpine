@@ -11,7 +11,7 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && mkdir -p /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer \
  && cp etc/pgbouncer.ini /etc/pgbouncer/ \
  && cp etc/userlist.txt /etc/pgbouncer/ \
- && adduser -D -S -u 70 pgbouncer \
+ && adduser -D -S -u 100 pgbouncer \
  && chown -R pgbouncer /etc/pgbouncer /var/run/pgbouncer /var/log/pgbouncer \
  && cd /tmp \
  && rm -rf /tmp/pgbouncer* \
