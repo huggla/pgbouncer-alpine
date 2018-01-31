@@ -3,7 +3,7 @@
 if [ ! -e "$CONFIG_FILE" ]
 then
    mkdir -p "$(dirname "$CONFIG_FILE")"
-   echo "[databases]" > "$CONFIG_FILE"
+   echo "[databases]" >> "$CONFIG_FILE"
    IFS=, read -ra db_rows <<< "$DATABASES"
    for db in "${db_rows[@]}"
    do
