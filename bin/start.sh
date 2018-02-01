@@ -50,3 +50,4 @@ then
 fi
 
 pgbouncer "$CONFIG_FILE"
+exit 0
