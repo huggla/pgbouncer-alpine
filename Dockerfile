@@ -24,7 +24,7 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
 
 ENV CONFIG_FILE "$CONFIG_DIR/pgbouncer.ini"
 ENV AUTH_FILE "$CONFIG_DIR/userlist.txt"
-ENV DATABASES "* = port=5432"
+ENV DATABASES *=port=5432
 ENV LISTEN_ADDR *
 
 USER pgbouncer
