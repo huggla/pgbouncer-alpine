@@ -14,9 +14,12 @@ then
    echo "[pgbouncer]" >> "$CONFIG_FILE"
    echo "listen_addr=$LISTEN_ADDR" >> "$CONFIG_FILE"
    echo "auth_file=$AUTH_FILE" >> "$CONFIG_FILE"
+   if [ -n "$AUTH_TYPE" ]
+   then
+      echo "auth_type=$AUTH_TYPE" >> "$CONFIG_FILE"
+   fi
    if [ -n "$AUTH_HBA_FILE" ]
    then
-      echo "auth_type=hba" >> "$CONFIG_FILE"
       echo "auth_hba_file=$AUTH_HBA_FILE" >> "$CONFIG_FILE"
    fi
    echo "unix_socket_dir=$UNIX_SOCKET_DIR" >> "$CONFIG_FILE"
