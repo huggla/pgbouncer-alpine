@@ -20,6 +20,17 @@ then
       echo "auth_hba_file=$AUTH_HBA_FILE" >> "$CONFIG_FILE"
    fi
    echo "unix_socket_dir=$UNIX_SOCKET_DIR" >> "$CONFIG_FILE"
+   if [ -n "$CLIENT_TLS_SSLMODE" ] && [ `echo $CLIENT_TLS_SSLMODE | grep -i "disable"` ]
+   then
+      echo "client_tls_sslmode=$CLIENT_TLS_SSLMODE" >> "$CONFIG_FILE"
+      echo "client_tls_ca_file=$CLIENT_TLS_CA_FILE" >> "$CONFIG_FILE"
+      echo "client_tls_cert_file=$CLIENT_TLS_CERT_FILE" >> "$CONFIG_FILE"
+      echo "client_tls_key_file=$CLIENT_TLS_KEY_FILE" >> "$CONFIG_FILE"
+   fi
+   if [ -n "$SERVER_RESET_QUERY" ]
+   then
+      echo "server_reset_query=$SERVER_RESET_QUERY" >> "$CONFIG_FILE"
+   fi
    for conf in $ADDITIONAL_CONFIGURATION
    do
       echo "$conf" >> "$CONFIG_FILE"
