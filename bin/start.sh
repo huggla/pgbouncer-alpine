@@ -17,13 +17,13 @@ then
    if [ -n "$AUTH_TYPE" ]
    then
       echo "auth_type=$AUTH_TYPE" >> "$CONFIG_FILE"
-   fi
-   if [ -n "$AUTH_HBA_FILE" ]
-   then
-      echo "auth_hba_file=$AUTH_HBA_FILE" >> "$CONFIG_FILE"
+      if [ ! `echo $AUTH_TYPE | grep -iq "hba"` ]
+      then
+         echo "auth_hba_file=$AUTH_HBA_FILE" >> "$CONFIG_FILE"
+      fi
    fi
    echo "unix_socket_dir=$UNIX_SOCKET_DIR" >> "$CONFIG_FILE"
-   if [ -n "$CLIENT_TLS_SSLMODE" ] && [ `echo $CLIENT_TLS_SSLMODE | grep -i "disable"` ]
+   if [ -n "$CLIENT_TLS_SSLMODE" ] && [ `echo $CLIENT_TLS_SSLMODE | grep -iq "disable"` ]
    then
       echo "client_tls_sslmode=$CLIENT_TLS_SSLMODE" >> "$CONFIG_FILE"
       echo "client_tls_ca_file=$CLIENT_TLS_CA_FILE" >> "$CONFIG_FILE"
@@ -40,21 +40,21 @@ then
    done
 fi
 
-if [ ! -e "$AUTH_FILE" ]
-then
-   mkdir -p "$(dirname "$AUTH_FILE")"
-   for auth in $AUTH
-   do
-      echo "$auth" >> "$AUTH_FILE"
-   done
-fi
-
-if [ ! -e "$AUTH_HBA_FILE" ] && [ -n "$AUTH_HBA" ]
+if [ -n "$AUTH_HBA" ] && [ ! -f "$AUTH_HBA_FILE" ]
 then
    mkdir -p "$(dirname "$AUTH_HBA_FILE")"
    for hba in $AUTH_HBA
    do
       echo "$hba" >> "$AUTH_HBA_FILE"
+   done
+fi
+
+if [ ! -f "$AUTH_FILE" ]
+then
+   mkdir -p "$(dirname "$AUTH_FILE")"
+   for auth in $AUTH
+   do
+      echo "$auth" >> "$AUTH_FILE"
    done
 fi
 
