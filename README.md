@@ -1,5 +1,5 @@
 # pgbouncer-alpine
-A minimal docker image with Pgbouncer.
+A minimal docker image with Pgbouncer. Listens by default on port 6432.
 
 ## Environment variables
 ### pre-set variables (can be set at runtime)
