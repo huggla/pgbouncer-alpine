@@ -22,12 +22,12 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && mkdir -p "$CONFIG_DIR" "$UNIX_SOCKET_DIR" \
  && chown pgbouncer "$CONFIG_DIR" "$UNIX_SOCKET_DIR"
 
-ENV CONFIG_FILE "$CONFIG_DIR/pgbouncer.ini"
-ENV AUTH_FILE "$CONFIG_DIR/userlist.txt"
-ENV AUTH_HBA_FILE "$CONFIG_DIR/pg_hba.conf"
-ENV DATABASES *=port=5432
-ENV LISTEN_ADDR *
+ENV CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
+    AUTH_FILE="$CONFIG_DIR/userlist.txt" \
+    AUTH_HBA_FILE="$CONFIG_DIR/pg_hba.conf" \
+    DATABASES="*=port=5432" \
+    LISTEN_ADDR="*"
 
 USER pgbouncer
 
-CMD ["/usr/local/bin/start.sh"]
+CMD ["start.sh"]
