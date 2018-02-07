@@ -18,7 +18,7 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && rm -rf /tmp/pgbouncer* \
  && apk del build-dependencies \
  && apk --no-cache add libssl1.0 libevent \
- && chmod ugo+x /usr/local/bin/start.sh \
+ && chmod +x /usr/local/bin/start.sh \
  && mkdir -p "$CONFIG_DIR" "$UNIX_SOCKET_DIR" \
  && chown pgbouncer "$CONFIG_DIR" "$UNIX_SOCKET_DIR"
 
