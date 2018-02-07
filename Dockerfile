@@ -2,8 +2,8 @@ FROM alpine:3.7
 
 COPY ./bin/start.sh /usr/local/bin/start.sh
 
-ENV CONFIG_DIR /etc/pgbouncer
-ENV UNIX_SOCKET_DIR /var/run/pgbouncer
+ENV CONFIG_DIR="/etc/pgbouncer" \
+    UNIX_SOCKET_DIR="/var/run/pgbouncer"
 
 RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
  && wget -O /tmp/pgbouncer-1.8.1.tar.gz https://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
