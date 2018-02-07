@@ -63,5 +63,8 @@ then
    mkdir -p "$UNIX_SOCKET_DIR"
 fi
 
+sudo chown2root -R "$(dirname "$CONFIG_FILE")"
+sudo chown2root -R "$(dirname "$AUTH_HBA_FILE")"
+sudo chown2root -R "$(dirname "$AUTH_FILE")"
 pgbouncer "$CONFIG_FILE"
 exit 0
