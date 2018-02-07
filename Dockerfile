@@ -1,6 +1,6 @@
 FROM alpine:3.7
 
-COPY ./bin/start.sh ./bin/chown2root ./bin/mkdir2root /usr/local/bin/
+COPY ./bin/start.sh ./bin/chown2root /usr/local/bin/
 
 ENV CONFIG_DIR="/etc/pgbouncer" \
     UNIX_SOCKET_DIR="/var/run/pgbouncer"
@@ -19,10 +19,10 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && apk del build-dependencies \
  && apk --no-cache add libssl1.0 libevent sudo \
  && chmod +x /usr/local/bin/start.sh \
- && chmod u=x,go= /usr/local/bin/chown2root /usr/local/bin/mkdir2root \
+ && chmod u=x,go= /usr/local/bin/chown2root \
  && mkdir -p "$CONFIG_DIR" "$UNIX_SOCKET_DIR" \
  && chown pgbouncer "$CONFIG_DIR" "$UNIX_SOCKET_DIR" \
- && echo "pgbouncer ALL=(root) NOPASSWD: /usr/local/bin/chown2root, /usr/local/bin/mkdir2root" > /etc/sudoers.d/pgbouncer
+ && echo "pgbouncer ALL=(root) NOPASSWD: /usr/local/bin/chown2root" > /etc/sudoers.d/pgbouncer
 
 ENV CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
     AUTH_FILE="$CONFIG_DIR/userlist.txt" \
