@@ -27,10 +27,10 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && chown pgbouncer "$CONFIG_DIR" "$UNIX_SOCKET_DIR" "$BIN_DIR/*" \
  && echo "pgbouncer ALL=(root) NOPASSWD: '$SUDO_DIR/*'" > /etc/sudoers.d/samba
 
-ENV AUTH_FILE="$CONFIG_DIR/userlist.txt" \
-    AUTH_HBA_FILE="$CONFIG_DIR/pg_hba.conf" \
-    DATABASES="*=port=5432" \
-    LISTEN_ADDR="*"
+ENV DATABASES="*=port=5432" \
+    param_auth_file="$CONFIG_DIR/userlist.txt" \
+    param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
+    param_listen_addr="*"
 
 USER pgbouncer
 
