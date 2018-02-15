@@ -1,6 +1,14 @@
 #!/bin/sh
 set -e
-IFS=","
+set +a
+set +m
+set +s
+set +i
+
+if [ -d "$SUDO_DIR" ]
+then
+   IFS="${IFS};"
+   sudo="/usr/bin/sudo"
 
 if [ ! -s "$CONFIG_FILE" ]
 then
