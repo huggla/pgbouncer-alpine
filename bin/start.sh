@@ -2,10 +2,9 @@
 set -e
 IFS=","
 
-if [ ! -e "$CONFIG_FILE" ]
+if [ ! -s "$CONFIG_FILE" ]
 then
-   mkdir -p "$(dirname "$CONFIG_FILE")"
-   echo "[databases]" >> "$CONFIG_FILE"
+   echo "[databases]" > "$CONFIG_FILE"
    for db in $DATABASES
    do
       echo "$db" >> "$CONFIG_FILE"
