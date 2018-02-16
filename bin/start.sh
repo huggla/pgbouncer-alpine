@@ -18,37 +18,56 @@ then
       done
       echo >> "$CONFIG_FILE"
       echo "[pgbouncer]" >> "$CONFIG_FILE"
-      echo "listen_addr=$LISTEN_ADDR" >> "$CONFIG_FILE"
-      echo "auth_file=$AUTH_FILE" >> "$CONFIG_FILE"
-      if [ -n "$AUTH_TYPE" ]
-      then
-         echo "auth_type=$AUTH_TYPE" >> "$CONFIG_FILE"
-         if [ ! `echo $AUTH_TYPE | grep -iq "hba"` ]
+      pgbouncer_parameters=`env | /bin/grep "param" | /bin/sed "s/^param_//g" | /bin/grep -oE '^[^=]+'`
+      for param in $pgbouncer_parameters
+      do
+         param_var="param_${param}"
+         eval "param_value=\$$param_var"
+         if [ -n "$param_value" ]
          then
-            echo "auth_hba_file=$AUTH_HBA_FILE" >> "$CONFIG_FILE"
+            echo -n "$param" >> "$CONFIG_FILE"
+            echo "=$param_value" >> "$CONFIG_FILE"
          fi
-      fi
-      echo "unix_socket_dir=$UNIX_SOCKET_DIR" >> "$CONFIG_FILE"
-      if [ -n "$CLIENT_TLS_SSLMODE" ] && [ `echo $CLIENT_TLS_SSLMODE | grep -iq "disable"` ]
-      then
-         echo "client_tls_sslmode=$CLIENT_TLS_SSLMODE" >> "$CONFIG_FILE"
-         echo "client_tls_ca_file=$CLIENT_TLS_CA_FILE" >> "$CONFIG_FILE"
-         echo "client_tls_cert_file=$CLIENT_TLS_CERT_FILE" >> "$CONFIG_FILE"
-         echo "client_tls_key_file=$CLIENT_TLS_KEY_FILE" >> "$CONFIG_FILE"
-      fi
-   if [ -n "$SERVER_RESET_QUERY" ]
-   then
-      echo "server_reset_query=$SERVER_RESET_QUERY" >> "$CONFIG_FILE"
+      done
    fi
-   for conf in $ADDITIONAL_CONFIGURATION
-   do
-      echo "$conf" >> "$CONFIG_FILE"
-   done
-fi
-
-if [ -n "$AUTH_HBA" ] && [ ! -f "$AUTH_HBA_FILE" ]
-then
-   mkdir -p "$(dirname "$AUTH_HBA_FILE")"
+   if [ "$param_auth_type" == "hba" ]
+   then
+      if [ ! -f "$param_auth_hba_file" ]
+      then
+         hba_file_dir="$(dirname "$param_auth_hba_file")"
+         /bin/mkdir -p "$hba_file_dir"
+         >"$param_auth_hba_file"
+         for user in $DATABASE_USERS
+         do
+            user_lc=$(echo $user | xargs | tr '[:upper:]' '[:lower:]')
+            envvar="hba_file_$user_lc"
+            eval "user_hba_file=\$$envvar"
+            if [ -z $user_hba_file ]
+            then
+               envvar="hba_$user_lc"
+               eval "user_pw=\$$envvar"
+               if [ -n "$user_pw" ]
+               then
+                  userpwfile=$SECRET_DIR/$user"_pw"
+                  echo $user_pw > $userpwfile
+                  unset user_pw
+                  unset $envvar
+                  env -i $sudo "$SUDO_DIR/chown2root" "$userpwfile"
+               else
+                  echo "No password given for $user."
+                  exit 1
+               fi
+               
+            eval "user_password=\$$
+            echo "\"$user\" " >> "$global_username_map"
+         done
+         env -i $sudo "$SUDO_DIR/chown2root" -R "$username_dir"
+      fi
+   
+   
+      if [ ! -f "$AUTH_HBA_FILE" ]
+      then
+         env -i mkdir -p "$(dirname "$AUTH_HBA_FILE")"
    for hba in $AUTH_HBA
    do
       echo "$hba" >> "$AUTH_HBA_FILE"
