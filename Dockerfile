@@ -5,12 +5,13 @@ ENV BIN_DIR="/usr/local/bin"
 COPY ./bin ${BIN_DIR}
 
 ENV CONFIG_DIR="/etc/pgbouncer" \
-    UNIX_SOCKET_DIR="/var/run/pgbouncer" \
     SUDO_DIR="$BIN_DIR/sudo" \
-    CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini"
+    CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
+    USER="pgbouncer" \
+    param_unix_socket_dir="/var/run/pgbouncer"
 
 RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
- && chmod 500 "$SUDO_DIR/*" "$BIN_DIR/*" \
+ && mkdir -p "$CONFIG_DIR" "$param_unix_socket_dir" \
  && wget -O /tmp/pgbouncer-1.8.1.tar.gz https://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
  && cd /tmp \
  && tar xvfz /tmp/pgbouncer-1.8.1.tar.gz \
@@ -18,14 +19,17 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
  && make \
  && cp pgbouncer /usr/local/bin \
- && adduser -D -S -H -s /bin/false -u 100 pgbouncer \
+ && chmod u=rx,g=rx,o= "$BIN_DIR/"* \
+ && chmod u=rx,go= "$SUDO_DIR/"* \
+ && chmod u=rwx,g=wx,o= "$CONFIG_DIR" "$param_unix_socket_dir" \
+ && addgroup -S $USER \
+ && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && cd /tmp \
  && rm -rf /tmp/pgbouncer* \
  && apk del build-dependencies \
  && apk --no-cache add libssl1.0 libevent sudo \
- && mkdir -p "$CONFIG_DIR" "$UNIX_SOCKET_DIR" \
- && chown pgbouncer "$CONFIG_DIR" "$UNIX_SOCKET_DIR" "$BIN_DIR/*" \
- && echo "pgbouncer ALL=(root) NOPASSWD: '$SUDO_DIR/*'" > /etc/sudoers.d/samba
+ && chown root:$USER "$CONFIG_DIR" "$param_unix_socket_dir" "$BIN_DIR/"* \
+ && echo "$USER HOST=(root) NOPASSWD: $(find "$SUDO_DIR" -type f | paste -d, -s )" > /etc/sudoers.d/pgbouncer
 
 ENV DATABASES="*=port=5432" \
     DATABASE_USERS="" \
@@ -33,6 +37,6 @@ ENV DATABASES="*=port=5432" \
     param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
     param_listen_addr="*"
 
-USER pgbouncer
+USER ${USER}
 
 CMD ["start.sh"]
