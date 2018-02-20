@@ -29,7 +29,9 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && apk del build-dependencies \
  && apk --no-cache add libssl1.0 libevent sudo \
  && chown root:$USER "$CONFIG_DIR" "$param_unix_socket_dir" "$BIN_DIR/"* \
- && echo "$USER HOST=(root) NOPASSWD: $(find "$SUDO_DIR" -type f | paste -d, -s )" > /etc/sudoers.d/pgbouncer
+ && chown $USER "$CONFIG_FILE" \
+ && echo "$USER HOST=(root) NOPASSWD: $(find "$SUDO_DIR" -type f | paste -d, -s )" > /etc/sudoers.d/pgbouncer \
+ && chmod u=rw,go= "$SUDOERS_FILE" "$CONFIG_FILE"
 
 ENV DATABASES="*=port=5432" \
     DATABASE_USERS="" \
