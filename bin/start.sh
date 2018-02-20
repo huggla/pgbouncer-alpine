@@ -32,51 +32,60 @@ then
    fi
    if [ "$param_auth_type" == "hba" ]
    then
-      if [ ! -f "$param_auth_hba_file" ]
+      if [ ! -e "$param_auth_hba_file" ]
       then
          hba_file_dir="$(dirname "$param_auth_hba_file")"
-         /bin/mkdir -p "$hba_file_dir"
+         if [ ! -e "$hba_file_dir" ]
+         then
+            /bin/mkdir -p "$hba_file_dir"
+         fi
          >"$param_auth_hba_file"
-         for user in $DATABASE_USERS
+         for hba in $AUTH_HBA
          do
-            user_lc=$(echo $user | xargs | tr '[:upper:]' '[:lower:]')
-            envvar="hba_file_$user_lc"
-            eval "user_hba_file=\$$envvar"
-            if [ -z $user_hba_file ]
-            then
-               envvar="hba_$user_lc"
-               eval "user_pw=\$$envvar"
-               if [ -n "$user_pw" ]
-               then
-                  userpwfile=$SECRET_DIR/$user"_pw"
-                  echo $user_pw > $userpwfile
-                  unset user_pw
-                  unset $envvar
-                  env -i $sudo "$SUDO_DIR/chown2root" "$userpwfile"
-               else
-                  echo "No password given for $user."
-                  exit 1
-               fi
-               
-            eval "user_password=\$$
-            echo "\"$user\" " >> "$global_username_map"
+            echo $hba >> "$param_auth_hba_file"
          done
-         env -i $sudo "$SUDO_DIR/chown2root" -R "$username_dir"
       fi
-   
-   
-      if [ ! -f "$AUTH_HBA_FILE" ]
+      env -i $sudo "$SUDO_DIR/chown2root" "$param_auth_hba_file"
+   fi
+   if [ ! -e "$param_auth_file" ]
+   then
+      auth_file_dir="$(dirname "$param_auth_file")"
+      if [ ! -e "$auth_file_dir" ]
       then
-         env -i mkdir -p "$(dirname "$AUTH_HBA_FILE")"
-   for hba in $AUTH_HBA
-   do
-      echo "$hba" >> "$AUTH_HBA_FILE"
-   done
-fi
-
-if [ ! -f "$AUTH_FILE" ]
-then
-   mkdir -p "$(dirname "$AUTH_FILE")"
+         mkdir -p "$(dirname "$param_auth_file")"
+      fi
+      >"$param_auth_file"
+      for user in $DATABASE_USERS
+      do
+         user_lc=$(echo $user | xargs | tr '[:upper:]' '[:lower:]')
+         envvar="password_file_$user_lc"
+         eval "userpwfile=\$$envvar"
+         if [ -z "$userpwfile" ]
+         then
+            envvar="password_$user_lc"
+            eval "user_pw=\$$envvar"
+            if [ -n "$user_pw" ]
+            then
+               userpwfile=$CONFIG_DIR/$user"_pw"
+               echo $user_pw > $userpwfile
+               unset user_pw
+               unset $envvar
+            else
+               echo "No password given for $user."
+               exit 1
+            fi
+         fi
+         env -i $sudo "$SUDO_DIR/chown2root" "$userpwfile"
+         env -i $sudo "$SUDO_DIR/adduser2pgbouncerauth" "$user" "$userpwfile"
+      done
+   fi
+         
+         
+            envvar="auth_hba_$user_lc"
+            eval "user_hba=\$$envvar"
+            echo $user_hba >> "$param_auth_hba_file"
+         done
+      
    for auth in $AUTH
    do
       echo "$auth" >> "$AUTH_FILE"
