@@ -11,7 +11,7 @@ readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
 if [ -f "$ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b;,")
-   environment=`/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %.=/\n'`
+   readonly environment=`/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %.=/\n'`
    /bin/rm "$ENVIRONMENT_FILE"
    var(){
       IFS_bak=$IFS
@@ -46,10 +46,44 @@ then
       set -e
    }
    readonly CONFIG_FILE="`var - CONFIG_FILE`"
-   readonly SHARES_DIR="`var - SHARES_DIR`"
-   makedir "$SHARES_DIR"
    if [ ! -s "$CONFIG_FILE" ]
    then
+      echo "[databases]" > "$CONFIG_FILE"
+      readonly DATABASES="`var - DATABASES`"
+      for db in $DATABASES
+      do
+         echo "$db" >> "$CONFIG_FILE"
+      done
+      echo >> "$CONFIG_FILE"
+      echo "[pgbouncer]" >> "$CONFIG_FILE"
+      readonly pgbouncer_parameters="`var param`"
+      for param in $pgbouncer_parameters
+      do
+         param_value="`var param $param`"
+         if [ -n "$param_value" ]
+         then
+            echo -n "$param" >> "$CONFIG_FILE"
+            echo "=$param_value" >> "$CONFIG_FILE"
+         fi
+      done
+   fi
+   readonly param_auth_type="`var param auth_type`"
+   if [ "$param_auth_type" == "hba" ]
+   then
+      readonly param_auth_hba_file="`var param auth_hba_file`"
+      makefile "$param_auth_hba_file"
+      if [ ! -s "$param_auth_hba_file" ]
+      then
+         readonly AUTH_HBA="`var - AUTH_HBA`"
+         for hba in $AUTH_HBA
+         do
+            echo $hba >> "$param_auth_hba_file"
+         done
+      fi
+   fi
+   
+   
+   
       readonly global_smb_passwd_file="`var global smb_passwd_file`"
       readonly environment=$environment$'\n'"global_passdb_backend=smbpasswd:$global_smb_passwd_file"
       readonly SHARES="global"$'\n'"`var - SHARES`"
