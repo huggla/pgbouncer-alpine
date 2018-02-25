@@ -6,4 +6,4 @@ set +s
 set +i
 
 env > "$ENVIRONMENT_FILE"
-exec env -i sudo "$SUDO_DIR/runsmbd.sh"
+exec env -i sudo "$SUDO_DIR/runpgbouncer.sh"
