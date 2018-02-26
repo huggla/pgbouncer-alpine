@@ -85,10 +85,10 @@ then
    makefile "$param_auth_file"
    if [ ! -s "$param_auth_file" ]
    then
-      readonly DATABASE_USERS="`var - DATABASE_USERS`"
+      readonly DATABASE_USERS="$(echo "$(var - DATABASE_USERS)" | awk '{$1=$1;print}')"
       for user in $DATABASE_USERS
       do
-         user_lc=$(echo $user | xargs /bin/echo | tr '[:upper:]' '[:lower:]')
+         user_lc=$(echo $user | tr '[:upper:]' '[:lower:]')
          userpwfile="`var - password_file_$user_lc`"
          if [ -z "$userpwfile" ]
          then
