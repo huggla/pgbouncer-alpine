@@ -12,7 +12,7 @@ readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
 if [ -f "$ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
-   readonly environment="$(/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\n')"
+   readonly environment="$(/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
    /bin/rm "$ENVIRONMENT_FILE"
    var(){
       IFS_bak=$IFS
