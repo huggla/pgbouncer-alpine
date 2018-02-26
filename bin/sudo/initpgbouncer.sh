@@ -94,7 +94,8 @@ then
       readonly DATABASE_USERS="$(echo "$(var - DATABASE_USERS)" | /usr/bin/awk '{$1=$1;print}')"
       for user in $DATABASE_USERS
       do
-         user_lc=$(echo $user | tr '[:upper:]' '[:lower:]')
+         user="$(trim "$user")"
+         user_lc="$(tolower "$user")"
          userpwfile="$(var - password_file_$user_lc)"
          if [ -z "$userpwfile" ]
          then
