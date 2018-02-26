@@ -81,7 +81,36 @@ then
          done
       fi
    fi
-   
+   readonly param_auth_file="`var param auth_file`"
+   makefile "$param_auth_file"
+   if [ ! -s "$param_auth_file" ]
+   then
+      readonly DATABASE_USERS="`var - DATABASE_USERS`"
+      for user in $DATABASE_USERS
+      do
+         user_lc=$(echo $user | xargs /bin/echo | tr '[:upper:]' '[:lower:]')
+         userpwfile="`var - password_file_$user_lc`"
+         if [ -z "$userpwfile" ]
+         then
+            userpwfile=$CONFIG_DIR/$user"_pw"
+         fi
+         makefile "$userpwfile"
+         if [ ! -s "$userpwfile" ]
+         then
+            user_pw="`var - password_$user_lc`"
+            if [ -n "$user_pw" ]
+            then
+               echo $user_pw > $userpwfile
+               unset user_pw
+            else
+               echo "No password given for $user."
+               exit 1
+            fi
+         fi
+         env -i $sudo "$SUDO_DIR/chown2root" "$userpwfile"
+         env -i $sudo "$SUDO_DIR/adduser2pgbouncerauth" "$user" "$userpwfile"
+      done
+   fi
    
    
       readonly global_smb_passwd_file="`var global smb_passwd_file`"
