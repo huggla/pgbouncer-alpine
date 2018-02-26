@@ -42,8 +42,8 @@ then
       makedir "$(/usr/bin/dirname "$1")"
       set +e
       /bin/touch "$1"
-      /bin/chown root "$1"
-      /bin/chmod u=rw,go= "$1"
+      /bin/chown root:$USER "$1"
+      /bin/chmod u=rw,g=r,o= "$1"
       set -e
    }
    trim(){
@@ -53,6 +53,7 @@ then
       echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
    }
    readonly CONFIG_FILE="$(var - CONFIG_FILE)"
+   readonly USER="$(var - USER)"
    if [ ! -s "$CONFIG_FILE" ]
    then
       echo "[databases]" > "$CONFIG_FILE"
