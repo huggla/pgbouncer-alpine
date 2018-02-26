@@ -8,6 +8,7 @@ set +i
 #readonly PATH=""
 readonly SUDO_DIR="$(/usr/bin/dirname $0)"
 readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
+GLOBIGNORE="*"
 if [ -f "$ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
