@@ -34,8 +34,8 @@ then
    makedir(){
       /bin/mkdir -p "$1"
       set +e
-      /bin/chown root "$1"
-      /bin/chmod u=rwx,go=x "$1"
+      /bin/chown root:$USER "$1"
+      /bin/chmod u=rwx,g=x,o= "$1"
       set -e
    }
    makefile(){
