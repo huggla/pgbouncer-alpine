@@ -5,7 +5,7 @@ set +m
 set +s
 set +i
 
-readonly PATH=""
+#readonly PATH=""
 readonly SUDO_DIR="`/usr/bin/dirname $0`"
 readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
 if [ -f "$ENVIRONMENT_FILE" ]
@@ -113,7 +113,7 @@ then
          set -e
       done
    fi
-   
-   
-
+   readonly param_unix_socket_dir="`var param unix_socket_dir`"
+   makedir "$param_unix_socket_dir"
+fi
 exit 0
