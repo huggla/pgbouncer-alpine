@@ -4,11 +4,11 @@ set +a
 set +m
 set +s
 set +i
+set -f
 
 #readonly PATH=""
 readonly SUDO_DIR="$(/usr/bin/dirname $0)"
 readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
-GLOBIGNORE="*"
 if [ -f "$ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
