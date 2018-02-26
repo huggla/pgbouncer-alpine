@@ -24,10 +24,11 @@ then
       fi
       if [ -z "$2" ]
       then
-         echo "$(echo $tmp | /usr/bin/awk -F= '{print $1}')"
+         result="$(echo $tmp | /usr/bin/awk -F= '{print $1}')"
       else
-         echo "$(echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{print $2}')"
+         result="$(echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{print $2}')"
       fi
+      echo $result | /usr/bin/awk '{$1=$1;print}'
       IFS=$IFS_bak
    }
    makedir(){
