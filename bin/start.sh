@@ -6,4 +6,6 @@ set +s
 set +i
 
 env > "$ENVIRONMENT_FILE"
-exec env -i sudo "$SUDO_DIR/runpgbouncer.sh"
+env -i sudo "$SUDO_DIR/runpgbouncer.sh"
+exec env -i pgbouncer "$CONFIG_FILE"
+exit 0
