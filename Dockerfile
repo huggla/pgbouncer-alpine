@@ -35,7 +35,7 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && echo "$USER ALL=(root) NOPASSWD: $SUDO_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
  && chmod u=rw,go= "$SUDOERS_FILE"
 
-ENV DATABASES="*=port=5432" \
+ENV DATABASES='*=port=5432' \
     DATABASE_USERS="" \
     param_auth_file="$CONFIG_DIR/userlist.txt" \
     param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
