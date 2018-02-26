@@ -107,109 +107,13 @@ then
                exit 1
             fi
          fi
-         env -i $sudo "$SUDO_DIR/chown2root" "$userpwfile"
-         env -i $sudo "$SUDO_DIR/adduser2pgbouncerauth" "$user" "$userpwfile"
-      done
-   fi
-   
-   
-      readonly global_smb_passwd_file="`var global smb_passwd_file`"
-      readonly environment=$environment$'\n'"global_passdb_backend=smbpasswd:$global_smb_passwd_file"
-      readonly SHARES="global"$'\n'"`var - SHARES`"
-      for share in $SHARES
-      do
-         echo >> "$CONFIG_FILE"
-         echo "[$share]" >> "$CONFIG_FILE"
-         share_lc="$(echo $share | /usr/bin/xargs /bin/echo | /usr/bin/tr '[:upper:]' '[:lower:]')"
-         share_parameters="`var $share`"
-         path_value="$SHARES_DIR/$share"
-         for param in $share_parameters
-         do
-            param_value="`var $share_lc $param`"
-            if [ -n "$param_value" ]
-            then
-               if [ "$param" == "path" ]
-               then
-                  path_value=$param_value
-               else
-                  echo -n "$param" | /usr/bin/tr '_' ' ' >> "$CONFIG_FILE"
-                  echo "=$param_value" >> "$CONFIG_FILE"
-               fi
-            fi
-         done
-         if [ "$share" != "global" ]
-         then
-            /bin/mkdir -p "$path_value"
-            echo "path=$path_value" >> "$CONFIG_FILE"
-         fi
-      done
-   else
-      readonly environment
-      readonly global_smb_passwd_file="$(echo "$(/bin/cat "$CONFIG_FILE" | /usr/bin/awk -v param="smb passwd file" -F= '$1==param{print $2}')")"
-      readonly share_paths="`/bin/cat "$CONFIG_FILE" | /bin/grep 'path=' | /usr/bin/awk -F= '{print $2}'`"
-      for path in $share_paths
-      do
-         /bin/mkdir -p "$path"
-      done
-   fi
-   makefile "$global_smb_passwd_file"
-   readonly SHARE_USERS="`var - SHARE_USERS`"
-   readonly SMBUSERS_FILE="`var - SMBUSERS_FILE`"
-   for user in $SHARE_USERS
-   do
-      if [ ! "`/usr/bin/id $user 2>/dev/null`" ]
-      then
-         /usr/sbin/adduser -D -H -s /bin/false "$user"
-      fi
-   done
-   if [ ! -s "$global_smb_passwd_file" ]
-   then
-      for user in $SHARE_USERS
-      do
-         user_lc=$(echo $user | /usr/bin/xargs /bin/echo | /usr/bin/tr '[:upper:]' '[:lower:]')
-         userpwfile="`var - password_file_$user_lc`"
-         if [ -z "$userpwfile" ]
-         then
-            userpwfile=$CONFIG_DIR/$user"_pw"
-         fi
-         makefile "$userpwfile"
-         if [ ! -s "$userpwfile" ]
-         then
-            user_pw="`var password $user_lc`"
-            if [ -n "$user_pw" ]
-            then
-               echo $user_pw > "$userpwfile"
-               unset user_pw
-            else
-               echo "No password given for $user."
-               exit 1
-            fi
-         fi
-         echo | /bin/cat "$userpwfile" - "$userpwfile" | "$SUDO_DIR/smbpasswd" -s -a "$user"
+         echo "\"$user\" \"$(cat "$userpwfile")\"" >> "$param_auth_file"
          set +e
          /bin/rm -f "$userpwfile"
          set -e
-         echo "$user = $user" >> "$SMBUSERS_FILE"
       done
    fi
-   readonly global_username_map="`var - global_username_map`"
-   if [ -n "$global_username_map" ] 
-   then
-      makefile "$global_username_map"
-      if [ ! -s "$global_username_map" ]
-      then
-         readonly USERNAME_MAP="`var - USERNAME_MAP`"
-         for user in $USERNAME_MAP
-         do
-            echo "$user" >> "$global_username_map"
-         done
-      fi
-   fi
-   if [ -n "$global_log_file" ] 
-   then
-      makefile "$global_log_file"
-   fi
-fi
-/usr/bin/sudo /usr/sbin/nmbd -D
-/usr/bin/sudo /usr/sbin/smbd -FS
+   
+   
+
 exit 0
