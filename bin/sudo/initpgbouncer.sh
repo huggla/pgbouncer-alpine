@@ -6,12 +6,12 @@ set +s
 set +i
 
 #readonly PATH=""
-readonly SUDO_DIR="`/usr/bin/dirname $0`"
+readonly SUDO_DIR="$(/usr/bin/dirname $0)"
 readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
 if [ -f "$ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
-   readonly environment=`/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,-*.=/\n'`
+   readonly environment="$(/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,-*.=/\n')"
    /bin/rm "$ENVIRONMENT_FILE"
    var(){
       IFS_bak=$IFS
@@ -24,11 +24,10 @@ then
       fi
       if [ -z "$2" ]
       then
-         result="$(echo $tmp | /usr/bin/awk -F= '{print $1}')"
+         echo $tmp | /usr/bin/awk -F= '{print $1}'
       else
-         result="$(echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{print $2}')"
+         echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{print $2}'
       fi
-      echo $result | /usr/bin/awk '{$1=$1;print}'
       IFS=$IFS_bak
    }
    makedir(){
@@ -46,21 +45,27 @@ then
       /bin/chmod u=rw,go= "$1"
       set -e
    }
-   readonly CONFIG_FILE="`var - CONFIG_FILE`"
+   trim(){
+      echo "$1" | /usr/bin/awk '{$1=$1;print}'
+   }
+   tolower(){
+      echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
+   }
+   readonly CONFIG_FILE="$(var - CONFIG_FILE)"
    if [ ! -s "$CONFIG_FILE" ]
    then
       echo "[databases]" > "$CONFIG_FILE"
-      readonly DATABASES="`var - DATABASES`"
+      readonly DATABASES="$(var - DATABASES)"
       for db in $DATABASES
       do
          echo "$db" >> "$CONFIG_FILE"
       done
       echo >> "$CONFIG_FILE"
       echo "[pgbouncer]" >> "$CONFIG_FILE"
-      readonly pgbouncer_parameters="`var param`"
+      readonly pgbouncer_parameters="$(var param)"
       for param in $pgbouncer_parameters
       do
-         param_value="`var param $param`"
+         param_value="$(var param $param)"
          if [ -n "$param_value" ]
          then
             echo -n "$param" >> "$CONFIG_FILE"
@@ -68,21 +73,21 @@ then
          fi
       done
    fi
-   readonly param_auth_type="`var param auth_type`"
+   readonly param_auth_type="$(var param auth_type)"
    if [ "$param_auth_type" == "hba" ]
    then
-      readonly param_auth_hba_file="`var param auth_hba_file`"
+      readonly param_auth_hba_file="$(var param auth_hba_file)"
       makefile "$param_auth_hba_file"
       if [ ! -s "$param_auth_hba_file" ]
       then
-         readonly AUTH_HBA="`var - AUTH_HBA`"
+         readonly AUTH_HBA="$(var - AUTH_HBA)"
          for hba in $AUTH_HBA
          do
             echo $hba >> "$param_auth_hba_file"
          done
       fi
    fi
-   readonly param_auth_file="`var param auth_file`"
+   readonly param_auth_file="$(var param auth_file)"
    makefile "$param_auth_file"
    if [ ! -s "$param_auth_file" ]
    then
@@ -90,15 +95,15 @@ then
       for user in $DATABASE_USERS
       do
          user_lc=$(echo $user | tr '[:upper:]' '[:lower:]')
-         userpwfile="`var - password_file_$user_lc`"
+         userpwfile="$(var - password_file_$user_lc)"
          if [ -z "$userpwfile" ]
          then
-            userpwfile=$CONFIG_DIR/$user"_pw"
+            userpwfile="$SUDO_DIR/$user_pw"
          fi
          makefile "$userpwfile"
          if [ ! -s "$userpwfile" ]
          then
-            user_pw="`var - password_$user_lc`"
+            user_pw="$(var - password_$user_lc)"
             if [ -n "$user_pw" ]
             then
                echo $user_pw > $userpwfile
@@ -114,7 +119,7 @@ then
          set -e
       done
    fi
-   readonly param_unix_socket_dir="`var param unix_socket_dir`"
+   readonly param_unix_socket_dir="$(var param unix_socket_dir)"
    makedir "$param_unix_socket_dir"
 fi
 exit 0
