@@ -39,6 +39,7 @@ ENV DATABASES="*=port=5432" \
     DATABASE_USERS="" \
     param_auth_file="$CONFIG_DIR/userlist.txt" \
     param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
+    param_unix_socket_dir="/run/pgbouncer" \
     param_listen_addr="*"
 
 USER ${USER}
