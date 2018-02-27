@@ -6,7 +6,7 @@ set +s
 set +i
 set -f
 
-#readonly PATH=""
+readonly PATH=""
 readonly SUDO_DIR="$(/usr/bin/dirname $0)"
 readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
 if [ -f "$ENVIRONMENT_FILE" ]
@@ -52,6 +52,8 @@ then
    tolower(){
       echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
    }
+   readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
+   rm "$SUDOERS_FILE"
    readonly CONFIG_FILE="$(var - CONFIG_FILE)"
    readonly USER="$(var - USER)"
    if [ ! -s "$CONFIG_FILE" ]
