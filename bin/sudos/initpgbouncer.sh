@@ -1,10 +1,5 @@
 #!/bin/sh
-set -e
-set +a
-set +m
-set +s
-set +i
-set -f
+set -e +a +m +s +i -f
 
 readonly PATH=""
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
@@ -56,10 +51,10 @@ then
    readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
    /bin/rm "$SUDOERS_FILE"
    readonly BIN_DIR="$(var - BIN_DIR)"
+   readonly CONFIG_FILE="$(var - CONFIG_FILE)"
    echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh"
    echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh"
    echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh"
-   readonly CONFIG_FILE="$(var - CONFIG_FILE)"
    readonly USER="$(var - USER)"
    if [ ! -s "$CONFIG_FILE" ]
    then
