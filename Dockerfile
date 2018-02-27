@@ -46,7 +46,7 @@ RUN addgroup -S $USER \
  && apk --no-cache add libssl1.0 libevent sudo \
  && ln /usr/bin/sudo "$BIN_DIR/sudo" \
     && chown root:$USER "$BIN_DIR/sudo" \
-    && chmod u=rx,g=rx,o= "$BIN_DIR/sudo" \
+    && chmod 4750 "$BIN_DIR/sudo" \
     && chmod u=rx,go= "$SUDOS_DIR/initpgbouncer.sh" \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
