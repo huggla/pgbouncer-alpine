@@ -4,8 +4,13 @@ set +a
 set +m
 set +s
 set +i
+set -f
 
-env > "$ENVIRONMENT_FILE"
-env -i sudo "$SUDO_DIR/initpgbouncer.sh"
+readonly PATH=""
+if [ -f "$SUDOERS_FILE" ]
+then
+   env > "$ENVIRONMENT_FILE"
+   env -i sudo "$SUDO_DIR/initpgbouncer.sh"
+fi
 exec env -i pgbouncer "$CONFIG_FILE"
 exit 0
