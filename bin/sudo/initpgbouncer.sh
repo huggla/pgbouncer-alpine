@@ -27,7 +27,7 @@ then
       then
          echo $tmp | /usr/bin/awk -F= '{print $1}'
       else
-         echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{s=""; for (i=2; i < NF; i++) s = s $i "="; print s $NF}'
+         echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{s=""; for (i=2; i < NF; i++) s = s $i "="; print s $NF; exit;}'
       fi
       IFS=$IFS_bak
    }
