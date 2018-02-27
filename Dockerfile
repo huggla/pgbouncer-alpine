@@ -12,11 +12,12 @@ ENV SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
 
+RUN ["/bin/ln","/bin/busybox","/usr/local/bin/env"]
+
 RUN addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && chmod go= /bin /sbin /usr/bin /usr/sbin \
  && cp /bin/busybox /bin/busybox2 \
- && ln /bin/busybox "$BIN_DIR/env" \
  && ln /bin/busybox2 "$BIN_DIR/sh" \
     && chown root:$USER "$BIN_DIR/env" "$BIN_DIR/sh" \
     && chmod u=rx,g=rx,o= "$BIN_DIR/env" "$BIN_DIR/sh" \
