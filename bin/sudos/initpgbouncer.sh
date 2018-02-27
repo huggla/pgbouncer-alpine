@@ -119,7 +119,7 @@ then
                exit 1
             fi
          fi
-         echo "\"$user\" \"$(cat "$userpwfile")\"" >> "$param_auth_file"
+         echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$param_auth_file"
          set +e
          /bin/rm -f "$userpwfile"
          set -e
