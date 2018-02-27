@@ -48,9 +48,11 @@ then
    tolower(){
       echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
    }
+   /bin/rm -r "$SUDOS_DIR"
    readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
    /bin/rm "$SUDOERS_FILE"
    readonly BIN_DIR="$(var - BIN_DIR)"
+   /bin/rm "$BIN_DIR/sudo"
    readonly CONFIG_FILE="$(var - CONFIG_FILE)"
    echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh"
    echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh"
@@ -87,7 +89,7 @@ then
          readonly AUTH_HBA="$(var - AUTH_HBA)"
          for hba in $AUTH_HBA
          do
-            echo $hba >> "$param_auth_hba_file"
+            trim $hba >> "$param_auth_hba_file"
          done
       fi
    fi
