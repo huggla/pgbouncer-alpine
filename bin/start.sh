@@ -6,7 +6,6 @@ set +s
 set +i
 set -f
 
-readonly PATH=""
 if [ -f "$SUDOERS_FILE" ] && [ -f "$ENVIRONMENT_FILE" ]
 then
    env > "$ENVIRONMENT_FILE"
