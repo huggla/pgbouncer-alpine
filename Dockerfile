@@ -12,19 +12,11 @@ ENV ENVIRONMENT_FILE="$SUDO_DIR/environment" \
     USER="pgbouncer" \
     PATH="$BIN_DIR"
 
-RUN /bin/mkdir -p "$CONFIG_DIR" \
- && /bin/touch "$CONFIG_FILE" \
- && /usr/bin/env > "$ENVIRONMENT_FILE" \
- && /usr/sbin/addgroup -S $USER \
+RUN /usr/sbin/addgroup -S $USER \
  && /usr/sbin/adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
- && /bin/echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
- && /bin/echo "$USER ALL=(root) NOPASSWD: $SUDO_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
- && /bin/chown root:$USER "$CONFIG_DIR" "$CONFIG_FILE" "$ENVIRONMENT_FILE" "$BIN_DIR/start.sh" \
- && /bin/chmod u=rx,g=rx,o= "$CONFIG_DIR" "$BIN_DIR/start.sh" \
- && /bin/chmod u=rw,g=r,o= "$CONFIG_FILE" \
- && /bin/chmod u=rw,g=w,o= "$ENVIRONMENT_FILE" \
- && /bin/chmod u=rx,go= "$SUDO_DIR/"* \
- && /bin/chmod u=rw,go= "$SUDOERS_FILE" \
+ && /usr/bin/env > "$ENVIRONMENT_FILE" \
+    && /bin/chown root:$USER "$ENVIRONMENT_FILE" \
+    && /bin/chmod u=rw,g=w,o= "$ENVIRONMENT_FILE" \
  && /sbin/apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
  && /usr/bin/wget -O /tmp/pgbouncer-1.8.1.tar.gz https://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
  && cd /tmp \
@@ -33,12 +25,23 @@ RUN /bin/mkdir -p "$CONFIG_DIR" \
  && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
  && make \
  && /bin/mv pgbouncer "$BIN_DIR/" \
- && /bin/chown root:$USER "$BIN_DIR/pgbouncer" \
- && /bin/chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \ 
  && cd /tmp \
  && /bin/rm -rf /tmp/pgbouncer* \
  && /sbin/apk del build-dependencies \
- && /sbin/apk --no-cache add libssl1.0 libevent sudo
+    && /bin/chown root:$USER "$BIN_DIR/pgbouncer" \
+    && /bin/chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \
+ && /bin/mkdir -p "$CONFIG_DIR" \
+ && /bin/touch "$CONFIG_FILE" \
+    && /bin/chown root:$USER "$CONFIG_DIR" "$CONFIG_FILE" \
+    && /bin/chmod u=rx,g=rx,o= "$CONFIG_DIR" \
+    && /bin/chmod u=rw,g=r,o= "$CONFIG_FILE" \
+ && /sbin/apk --no-cache add libssl1.0 libevent sudo \
+    && /bin/chmod u=rx,go= "$SUDO_DIR/"* \
+ && /bin/echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
+ && /bin/echo "$USER ALL=(root) NOPASSWD: $SUDO_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
+    && /bin/chmod u=rw,go= "$SUDOERS_FILE" \
+    && /bin/chown root:$USER "$BIN_DIR/start.sh" \
+    && /bin/chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
 
 ENV DATABASES="*=port=5432" \
     DATABASE_USERS="" \
