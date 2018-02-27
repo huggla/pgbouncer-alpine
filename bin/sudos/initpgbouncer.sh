@@ -8,12 +8,13 @@ set -f
 
 readonly PATH=""
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
-readonly ENVIRONMENT_FILE="$SUDOS_DIR/environment"
-if [ -f "$ENVIRONMENT_FILE" ]
+readonly SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment"
+readonly USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment"
+if [ -f "$SU_ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
-   readonly environment="$(/bin/cat "$ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
-   /bin/rm "$ENVIRONMENT_FILE"
+   readonly environment="$(/bin/cat "$SU_ENVIRONMENT_FILE" "$USER_ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
+   /bin/rm "$SU_ENVIRONMENT_FILE" "$USER_ENVIRONMENT_FILE"
    var(){
       IFS_bak=$IFS
       IFS=?
