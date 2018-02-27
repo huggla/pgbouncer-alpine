@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/local/bin/sh
 set -e
 set +a
 set +m
