@@ -10,6 +10,7 @@ readonly PATH=""
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
 readonly SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment"
 readonly USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment"
+rm /usr/local/bin/start.sh
 if [ -f "$SU_ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
