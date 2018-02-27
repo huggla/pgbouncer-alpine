@@ -49,7 +49,7 @@ RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
     && chmod u=rw,go= "$SUDOERS_FILE" \
  && echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh" \
  && echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh" \
- && echo "env > \"$USER_ENVIRONMENT_FILE\" || exec env -i pgbouncer \"$CONFIG_FILE\"; exit 0" >> "$BIN_DIR/start.sh" \
+ && echo "env > \"$USER_ENVIRONMENT_FILE\"" >> "$BIN_DIR/start.sh" \
  && echo "env -i sudo \"$SUDOS_DIR/initpgbouncer.sh\"" >> "$BIN_DIR/start.sh" \
  && echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh" \
     && chown root:$USER "$BIN_DIR/start.sh" \
