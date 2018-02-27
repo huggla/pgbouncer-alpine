@@ -12,8 +12,8 @@ ENV ENVIRONMENT_FILE="$SUDO_DIR/environment" \
     USER="pgbouncer"
 
 RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
- && ln -s /usr/bin/env /usr/local/bin/env \
- && ln -s /bin/sh /usr/local/bin/sh \
+ && ln /usr/bin/env /usr/local/bin/env \
+ && ln /bin/sh /usr/local/bin/sh \
  && addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && env > "$ENVIRONMENT_FILE" \
@@ -38,7 +38,7 @@ RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
     && chmod u=rx,g=rx,o= "$CONFIG_DIR" \
     && chmod u=rw,g=r,o= "$CONFIG_FILE" \
  && apk --no-cache add libssl1.0 libevent sudo \
- && ln -s /usr/bin/sudo /usr/local/bin/sudo \
+ && ln /usr/bin/sudo /usr/local/bin/sudo \
     && chmod u=rx,go= "$SUDO_DIR/"* \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDO_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
