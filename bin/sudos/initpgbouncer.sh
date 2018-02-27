@@ -10,7 +10,6 @@ readonly PATH=""
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
 readonly SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment"
 readonly USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment"
-rm /usr/local/bin/start.sh
 if [ -f "$SU_ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
@@ -56,6 +55,10 @@ then
    }
    readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
    /bin/rm "$SUDOERS_FILE"
+   readonly BIN_DIR="$(var - BIN_DIR)"
+   echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh"
+   echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh"
+   echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh"
    readonly CONFIG_FILE="$(var - CONFIG_FILE)"
    readonly USER="$(var - USER)"
    if [ ! -s "$CONFIG_FILE" ]
