@@ -20,7 +20,7 @@ RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && env > "$SU_ENVIRONMENT_FILE" \
  && touch "$USER_ENVIRONMENT_FILE" \
-    && chmod u=r,go= "$SU_ENVIRONMENT_FILE" \
+    && chmod u=rw,go= "$SU_ENVIRONMENT_FILE" \
     && chown root:$USER "$USER_ENVIRONMENT_FILE" \
     && chmod u=rw,g=w,o= "$USER_ENVIRONMENT_FILE" \
  && apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
