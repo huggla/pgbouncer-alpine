@@ -43,10 +43,18 @@ RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
     && chmod u=rw,g=r,o= "$CONFIG_FILE" \
  && apk --no-cache add libssl1.0 libevent sudo \
  && ln /usr/bin/sudo "$BIN_DIR/sudo" \
-    && chmod u=rx,go= "$SUDOS_DIR/"* \
+    && chmod u=rx,go= "$SUDOS_DIR/initpgbouncer.sh" \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
     && chmod u=rw,go= "$SUDOERS_FILE" \
+ && echo "#!$BIN_DIR/sh > "$BIN_DIR/start.sh" \
+ && echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh" \
+ && echo "if [ -f \"$SUDOERS_FILE\" ] && [ -f \"$USER_ENVIRONMENT_FILE\" ]" >> "$BIN_DIR/start.sh" \
+ && echo "then" >> "$BIN_DIR/start.sh" \
+ && echo "env > \"$USER_ENVIRONMENT_FILE\"" >> "$BIN_DIR/start.sh" \
+ && echo "env -i sudo \"$SUDOS_DIR/initpgbouncer.sh\"" >> "$BIN_DIR/start.sh" \
+ && echo "fi" >> "$BIN_DIR/start.sh" \
+ && echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh" \
     && chown root:$USER "$BIN_DIR/start.sh" \
     && chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
 
