@@ -8,7 +8,7 @@ ENV SUDO_DIR="$BIN_DIR/sudo"
 ENV CONFIG_DIR="/etc/pgbouncer"
 ENV ENVIRONMENT_FILE="$SUDO_DIR/environment" \
     CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
-    SUDOERS_FILE="/etc/sudoers.d/pgbouncer" \
+    SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
 
 RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
