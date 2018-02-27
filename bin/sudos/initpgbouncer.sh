@@ -7,8 +7,8 @@ set +i
 set -f
 
 readonly PATH=""
-readonly SUDO_DIR="$(/usr/bin/dirname $0)"
-readonly ENVIRONMENT_FILE="$SUDO_DIR/environment"
+readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
+readonly ENVIRONMENT_FILE="$SUDOS_DIR/environment"
 if [ -f "$ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
@@ -103,7 +103,7 @@ then
          userpwfile="$(var - password_file_$user_lc)"
          if [ -z "$userpwfile" ]
          then
-            userpwfile="$SUDO_DIR/$user_lc"
+            userpwfile="$SUDOS_DIR/$user_lc"
          fi
          makefile "$userpwfile"
          if [ ! -s "$userpwfile" ]
