@@ -12,12 +12,11 @@ ENV SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
 
-RUN ["/bin/ln","/bin/busybox","/usr/local/bin/env"]
-
-RUN ln /bin/busybox "$BIN_DIR/sh"
+RUN ["/bin/ln","/bin/busybox","/bin/busybox2"]
 
 RUN addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
+# && mv /bin/busybox2 $BIN_DIR/
     && chmod go= /bin /sbin /usr/bin /usr/sbin \
     && chown root:$USER /bin/busybox \
     && chmod u=rx,g=rx,o= /bin/busybox \
@@ -51,12 +50,13 @@ RUN addgroup -S $USER \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
     && chmod u=rw,go= "$SUDOERS_FILE" \
- && echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh" \
- && echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh" \
- && echo "env > \"$USER_ENVIRONMENT_FILE\"" >> "$BIN_DIR/start.sh" \
- && echo "env -i sudo \"$SUDOS_DIR/initpgbouncer.sh\"" >> "$BIN_DIR/start.sh" \
- && echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh" \
-    && chmod u=rx,go= "$SUDOS_DIR/initpgbouncer.sh" \
+# && echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh" \
+# && echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh" \
+# && echo "env > \"$USER_ENVIRONMENT_FILE\"" >> "$BIN_DIR/start.sh" \
+# && echo "env -i sudo \"$SUDOS_DIR/initpgbouncer.sh\"" >> "$BIN_DIR/start.sh" \
+# && echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh" \
+ && echo "exec \"$BIN_DIR/sudo\" \"$SUDOS_DIR/readenvironment\"" > "$BIN_DIR/start.sh"
+    && chmod u=rx,go= "$SUDOS_DIR/readenvironment" "$SUDOS_DIR/initpgbouncer.sh" \
     && chown root:$USER "$BIN_DIR/start.sh" \
     && chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
 
