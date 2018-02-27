@@ -11,7 +11,9 @@ ENV ENVIRONMENT_FILE="$SUDO_DIR/environment" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
 
-RUN chmod go= /sbin /usr/bin /usr/sbin \
+RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
+ && ln -s /usr/bin/env /usr/local/bin/env \
+ && ln -s /bin/sh /usr/local/bin/sh \
  && /usr/sbin/addgroup -S $USER \
  && /usr/sbin/adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && /usr/bin/env > "$ENVIRONMENT_FILE" \
