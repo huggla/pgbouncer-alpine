@@ -9,8 +9,7 @@ ENV CONFIG_DIR="/etc/pgbouncer"
 ENV ENVIRONMENT_FILE="$SUDO_DIR/environment" \
     CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
-    USER="pgbouncer" \
-    PATH="$BIN_DIR"
+    USER="pgbouncer"
 
 RUN /usr/sbin/addgroup -S $USER \
  && /usr/sbin/adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
