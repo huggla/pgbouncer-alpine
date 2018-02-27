@@ -47,7 +47,7 @@ RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
     && chmod u=rw,go= "$SUDOERS_FILE" \
- && echo "#!$BIN_DIR/sh > "$BIN_DIR/start.sh" \
+ && echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh" \
  && echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh" \
  && echo "if [ -f \"$SUDOERS_FILE\" ] && [ -f \"$USER_ENVIRONMENT_FILE\" ]" >> "$BIN_DIR/start.sh" \
  && echo "then" >> "$BIN_DIR/start.sh" \
