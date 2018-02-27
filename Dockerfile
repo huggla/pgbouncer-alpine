@@ -4,16 +4,16 @@ ENV BIN_DIR="/usr/local/bin"
 
 COPY ./bin ${BIN_DIR}
 
-ENV SUDO_DIR="$BIN_DIR/sudos"
+ENV SUDOS_DIR="$BIN_DIR/sudos"
 ENV CONFIG_DIR="/etc/pgbouncer"
-ENV ENVIRONMENT_FILE="$SUDO_DIR/environment" \
+ENV ENVIRONMENT_FILE="$SUDOS_DIR/environment" \
     CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
 
 RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
- && ln -s /bin/busybox /usr/local/bin/env \
- && ln -s /bin/busybox /usr/local/bin/sh \
+ && ln -s /bin/busybox "$BIN_DIR/env" \
+ && ln -s /bin/busybox "$BIN_DIR/sh" \
  && addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && env > "$ENVIRONMENT_FILE" \
@@ -38,10 +38,10 @@ RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
     && chmod u=rx,g=rx,o= "$CONFIG_DIR" \
     && chmod u=rw,g=r,o= "$CONFIG_FILE" \
  && apk --no-cache add libssl1.0 libevent sudo \
- && ln -s /usr/bin/sudo /usr/local/bin/sudo \
-    && chmod u=rx,go= "$SUDO_DIR/"* \
+ && ln -s /usr/bin/sudo "$BIN_DIR/sudo" \
+    && chmod u=rx,go= "$SUDOS_DIR/"* \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
- && echo "$USER ALL=(root) NOPASSWD: $SUDO_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
+ && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/initpgbouncer.sh" >> "$SUDOERS_FILE" \
     && chmod u=rw,go= "$SUDOERS_FILE" \
     && chown root:$USER "$BIN_DIR/start.sh" \
     && chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
