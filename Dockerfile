@@ -13,8 +13,9 @@ ENV SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment" \
     USER="pgbouncer"
 
 RUN chmod go= /bin /sbin /usr/bin /usr/sbin \
- && ln /bin/busybox "$BIN_DIR/env" \
- && ln /bin/busybox "$BIN_DIR/sh" \
+ && cp /bin/busybox /bin/busybox2 \
+ && ln /bin/busybox2 "$BIN_DIR/env" \
+ && ln /bin/busybox2 "$BIN_DIR/sh" \
  && addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
  && env > "$SU_ENVIRONMENT_FILE" \
