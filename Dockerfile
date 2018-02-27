@@ -42,7 +42,8 @@ RUN /usr/sbin/addgroup -S $USER \
     && /bin/chown root:$USER "$BIN_DIR/start.sh" \
     && /bin/chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
 
-ENV DATABASES="*=port=5432" \
+ENV PATH="$BIN_DIR" \
+    DATABASES="*=port=5432" \
     DATABASE_USERS="" \
     param_auth_file="$CONFIG_DIR/userlist.txt" \
     param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
