@@ -70,4 +70,4 @@ ENV PATH="$BIN_DIR:$SUDOS_DIR" \
     param_unix_socket_dir="/run/pgbouncer" \
     param_listen_addr="*"
 
-CMD ["sudo","readenvironment.sh"]
+CMD ["/usr/local/bin/sudo","'/usr/local/bin/sudo/readenvironment.sh'"]
