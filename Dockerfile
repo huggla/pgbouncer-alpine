@@ -62,7 +62,7 @@ RUN addgroup -S $USER \
 
 USER ${USER}
 
-ENV PATH="$BIN_DIR" \
+ENV PATH="$BIN_DIR:$SUDOS_DIR" \
     DATABASES="*=port=5432" \
     DATABASE_USERS="" \
     param_auth_file="$CONFIG_DIR/userlist.txt" \
@@ -70,4 +70,4 @@ ENV PATH="$BIN_DIR" \
     param_unix_socket_dir="/run/pgbouncer" \
     param_listen_addr="*"
 
-CMD ["start.sh"]
+CMD ["sudo","readenvironment.sh"]
