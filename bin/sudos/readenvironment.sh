@@ -1,7 +1,7 @@
 #!/bin/sh
 
-set -e +a +m +s +i -f
-/usr/bin/env
+#set -e +a +m +s +i -f
+/usr/bin/env > /usr/local/bin/apa
 unset PATH
 if [ -f "$USER_ENVIRONMENT_FILE" ]
 then
