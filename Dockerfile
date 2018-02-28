@@ -12,14 +12,9 @@ ENV SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
 
-RUN ["/bin/ln","/bin/busybox","/bin/busybox2"]
-
 RUN addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
-# && mv /bin/busybox2 "$BIN_DIR/busybox"
     && chmod go= /bin /sbin /usr/bin /usr/sbin \
- #   && chown root:$USER /bin/busybox \
- #   && chmod u=rx,g=rx,o= /bin/busybox \
  && env > "$SU_ENVIRONMENT_FILE" \
  && touch "$USER_ENVIRONMENT_FILE" \
     && chmod u=rw,go= "$SU_ENVIRONMENT_FILE" \
@@ -46,19 +41,11 @@ RUN addgroup -S $USER \
  && apk --no-cache add libssl1.0 libevent sudo \
  && ln /usr/bin/sudo "$BIN_DIR/sudo" \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
-# && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_FILE" \
+ && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_FILE" \
  && echo 'Defaults env_keep = "USER_ENVIRONMENT_FILE DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' >> "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/readenvironment.sh" >> "$SUDOERS_FILE" \
     && chmod u=rw,go= "$SUDOERS_FILE" \
-# && echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh" \
-# && echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh" \
-# && echo "env > \"$USER_ENVIRONMENT_FILE\"" >> "$BIN_DIR/start.sh" \
-# && echo "env -i sudo \"$SUDOS_DIR/initpgbouncer.sh\"" >> "$BIN_DIR/start.sh" \
-# && echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh" \
- && echo "exec \"$BIN_DIR/sudo\" \"$SUDOS_DIR/readenvironment.sh\"" > "$BIN_DIR/start.sh" \
-    && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh" \
-    && chown root:$USER "$BIN_DIR/start.sh" \
-    && chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
+    && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh"
 
 USER ${USER}
 
