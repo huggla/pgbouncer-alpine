@@ -42,7 +42,7 @@ RUN addgroup -S $USER \
  && ln /usr/bin/sudo "$BIN_DIR/sudo" \
  && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
  && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_FILE" \
- && echo 'Defaults env_keep = "PATH CONFIG_FILE USER_ENVIRONMENT_FILE DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' >> "$SUDOERS_FILE" \
+ && echo 'Defaults env_keep = "DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' >> "$SUDOERS_FILE" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/readenvironment.sh" >> "$SUDOERS_FILE" \
     && chmod u=rw,go= "$SUDOERS_FILE" \
     && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh"
