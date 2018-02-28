@@ -48,7 +48,7 @@ then
    tolower(){
       echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
    }
-   /bin/rm -rf "$SUDOS_DIR"
+ #  /bin/rm -rf "$SUDOS_DIR"
    readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
    /bin/rm "$SUDOERS_FILE"
    readonly BIN_DIR="$(var - BIN_DIR)"
