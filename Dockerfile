@@ -56,7 +56,7 @@ RUN addgroup -S $USER \
 # && echo "env -i sudo \"$SUDOS_DIR/initpgbouncer.sh\"" >> "$BIN_DIR/start.sh" \
 # && echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh" \
  && echo "exec \"$BIN_DIR/sudo\" \"$SUDOS_DIR/readenvironment\"" > "$BIN_DIR/start.sh"
-    && chmod u=rx,go= "$SUDOS_DIR/readenvironment" "$SUDOS_DIR/initpgbouncer.sh" \
+    && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh" \
     && chown root:$USER "$BIN_DIR/start.sh" \
     && chmod u=rx,g=rx,o= "$BIN_DIR/start.sh"
 
