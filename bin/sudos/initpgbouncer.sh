@@ -1,63 +1,62 @@
 #!/bin/sh
 set -e +a +m +s +i -f
 
-readonly PATH=""
+var(){
+   IFS_bak=$IFS
+   IFS=?
+   if [ "$1" == "-" ]
+   then
+      tmp="$environment"
+   else
+      tmp="$(echo $environment | /usr/bin/awk -v section=$1 -F_ '$1==section{s=""; for (i=2; i < NF; i++) s = s $i "_"; print s $NF}')"
+   fi
+   if [ -z "$2" ]
+   then
+      echo $tmp | /usr/bin/awk -F= '{print $1}'
+   else
+      echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{s=""; for (i=2; i < NF; i++) s = s $i "="; print s $NF; exit;}'
+   fi
+   IFS=$IFS_bak
+}
+makedir(){
+   /bin/mkdir -p "$1"
+   set +e
+   /bin/chown root:$USER "$1"
+   /bin/chmod u=rwx,g=x,o= "$1"
+   set -e
+}
+makefile(){
+   makedir "$(/usr/bin/dirname "$1")"
+   set +e
+   /bin/touch "$1"
+   /bin/chown root:$USER "$1"
+   /bin/chmod u=rw,g=r,o= "$1"
+   set -e
+}
+trim(){
+   echo "$1" | /usr/bin/awk '{$1=$1;print}'
+}
+tolower(){
+   echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
+}
+
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
 readonly SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment"
+environment="$(/bin/cat "$SU_ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
+readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
+readonly BIN_DIR="$(var - BIN_DIR)"
+readonly USER="$(var - USER)"
+readonly CONFIG_FILE="$(var - CONFIG_FILE)"
 readonly USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment"
-if [ -f "$SU_ENVIRONMENT_FILE" ]
+ #  /bin/rm "$BIN_DIR/sudo"
+ #   /bin/rm "$SUDOERS_FILE"
+
+if [ -f "$USER_ENVIRONMENT_FILE" ]
 then
    IFS=$(echo -en "\n\b,")
    readonly environment="$(/bin/cat "$SU_ENVIRONMENT_FILE" "$USER_ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
-   /bin/rm "$SU_ENVIRONMENT_FILE" "$USER_ENVIRONMENT_FILE"
-   var(){
-      IFS_bak=$IFS
-      IFS=?
-      if [ "$1" == "-" ]
-      then
-         tmp="$environment"
-      else
-         tmp="$(echo $environment | /usr/bin/awk -v section=$1 -F_ '$1==section{s=""; for (i=2; i < NF; i++) s = s $i "_"; print s $NF}')"
-      fi
-      if [ -z "$2" ]
-      then
-         echo $tmp | /usr/bin/awk -F= '{print $1}'
-      else
-         echo $tmp | /usr/bin/awk -v param=$2 -F= '$1==param{s=""; for (i=2; i < NF; i++) s = s $i "="; print s $NF; exit;}'
-      fi
-      IFS=$IFS_bak
-   }
-   makedir(){
-      /bin/mkdir -p "$1"
-      set +e
-      /bin/chown root:$USER "$1"
-      /bin/chmod u=rwx,g=x,o= "$1"
-      set -e
-   }
-   makefile(){
-      makedir "$(/usr/bin/dirname "$1")"
-      set +e
-      /bin/touch "$1"
-      /bin/chown root:$USER "$1"
-      /bin/chmod u=rw,g=r,o= "$1"
-      set -e
-   }
-   trim(){
-      echo "$1" | /usr/bin/awk '{$1=$1;print}'
-   }
-   tolower(){
-      echo "$1" | /usr/bin/tr '[:upper:]' '[:lower:]'
-   }
+   /bin/rm "$USER_ENVIRONMENT_FILE"
  #  /bin/rm -rf "$SUDOS_DIR"
-   readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
-   /bin/rm "$SUDOERS_FILE"
-   readonly BIN_DIR="$(var - BIN_DIR)"
-   /bin/rm "$BIN_DIR/sudo"
-   readonly CONFIG_FILE="$(var - CONFIG_FILE)"
-   echo "#!$BIN_DIR/sh" > "$BIN_DIR/start.sh"
-   echo "set -e +a +m +s +i -f" >> "$BIN_DIR/start.sh"
-   echo "exec env -i pgbouncer \"$CONFIG_FILE\"" >> "$BIN_DIR/start.sh"
-   readonly USER="$(var - USER)"
    if [ ! -s "$CONFIG_FILE" ]
    then
       echo "[databases]" > "$CONFIG_FILE"
@@ -129,4 +128,4 @@ then
    readonly param_unix_socket_dir="$(var param unix_socket_dir)"
    makedir "$param_unix_socket_dir"
 fi
-exit 0
+exec /usr/bin/env -i "$BIN_DIR/sudo" -u $USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
