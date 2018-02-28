@@ -16,10 +16,10 @@ RUN ["/bin/ln","/bin/busybox","/bin/busybox2"]
 
 RUN addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
-# && mv /bin/busybox2 $BIN_DIR/
+# && mv /bin/busybox2 "$BIN_DIR/busybox"
     && chmod go= /bin /sbin /usr/bin /usr/sbin \
-    && chown root:$USER /bin/busybox \
-    && chmod u=rx,g=rx,o= /bin/busybox \
+ #   && chown root:$USER /bin/busybox \
+ #   && chmod u=rx,g=rx,o= /bin/busybox \
  && env > "$SU_ENVIRONMENT_FILE" \
  && touch "$USER_ENVIRONMENT_FILE" \
     && chmod u=rw,go= "$SU_ENVIRONMENT_FILE" \
