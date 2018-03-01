@@ -6,8 +6,8 @@ COPY ./bin ${BIN_DIR}
 
 ENV SUDOS_DIR="$BIN_DIR/sudos"
 ENV CONFIG_DIR="/etc/pgbouncer"
-ENV BUILDTIME_ENVIRONMENT="$SUDOS_DIR/su_environment" \
-    RUNTIME_ENVIRONMENT="$SUDOS_DIR/user_environment" \
+ENV BUILDTIME_ENVIRONMENT="$SUDOS_DIR/buildtime_environment" \
+    RUNTIME_ENVIRONMENT="$SUDOS_DIR/runtime_environment" \
     CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
