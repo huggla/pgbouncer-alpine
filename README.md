@@ -1,4 +1,4 @@
-**Note! I use the Latest tag for development, which means that it isn't allways working. Tags named with a date are stable.**
+**Note! I use Docker latest tag for development, which means that it isn't allways working. Date tags are stable.**
 
 # pgbouncer-alpine
 A secure and minimal docker image with Pgbouncer. Listens by default on port 6432.
