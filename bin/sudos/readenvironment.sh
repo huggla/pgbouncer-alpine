@@ -2,10 +2,10 @@
 set -e +a +m +s +i -f
 
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
-readonly USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment"
-if [ -f "$USER_ENVIRONMENT_FILE" ]
+readonly RUNTIME_ENVIRONMENT="$SUDOS_DIR/runtime_environment"
+if [ -f "$RUNTIME_ENVIRONMENT" ]
 then
-   /usr/bin/env > "$USER_ENVIRONMENT_FILE"
+   /usr/bin/env > "$RUNTIME_ENVIRONMENT"
 fi
 unset password_$SUDO_USER
 exec /usr/bin/env -i "$SUDOS_DIR/initpgbouncer.sh"
