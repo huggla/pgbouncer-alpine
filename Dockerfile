@@ -6,8 +6,8 @@ COPY ./bin ${BIN_DIR}
 
 ENV SUDOS_DIR="$BIN_DIR/sudos"
 ENV CONFIG_DIR="/etc/pgbouncer"
-ENV SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment" \
-    USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment" \
+ENV BUILDTIME_ENVIRONMENT="$SUDOS_DIR/su_environment" \
+    RUNTIME_ENVIRONMENT="$SUDOS_DIR/user_environment" \
     CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
     SUDOERS_FILE="/etc/sudoers.d/docker" \
     USER="pgbouncer"
@@ -15,11 +15,11 @@ ENV SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment" \
 RUN addgroup -S $USER \
  && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
     && chmod go= /bin /sbin /usr/bin /usr/sbin \
- && env > "$SU_ENVIRONMENT_FILE" \
- && touch "$USER_ENVIRONMENT_FILE" \
-    && chmod u=rw,go= "$SU_ENVIRONMENT_FILE" \
-    && chown root:$USER "$USER_ENVIRONMENT_FILE" \
-    && chmod u=rw,g=w,o= "$USER_ENVIRONMENT_FILE" \
+ && env > "$BUILDTIME_ENVIRONMENT" \
+ && touch "$RUNTIME_ENVIRONMENT" \
+    && chmod u=rw,go= "$BUILDTIME_ENVIRONMENT" \
+    && chown root:$USER "$RUNTIME_ENVIRONMENT" \
+    && chmod u=rw,g=w,o= "$RUNTIME_ENVIRONMENT" \
  && apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
  && wget -O /tmp/pgbouncer-1.8.1.tar.gz https://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
  && cd /tmp \
