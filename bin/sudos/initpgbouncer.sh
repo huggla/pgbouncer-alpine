@@ -53,7 +53,6 @@ then
    IFS=$(echo -en "\n\b,")
    readonly environment="$(/bin/cat "$BUILDTIME_ENVIRONMENT" "$RUNTIME_ENVIRONMENT" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
    /bin/rm "$RUNTIME_ENVIRONMENT"
- #  /bin/rm -rf "$SUDOS_DIR"
    if [ ! -s "$CONFIG_FILE" ]
    then
       echo "[databases]" > "$CONFIG_FILE"
