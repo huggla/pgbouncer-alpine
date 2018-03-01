@@ -42,7 +42,7 @@ RUN addgroup -S $USER \
  && ln /usr/bin/sudo "$BIN_DIR/sudo" \
  && echo 'Defaults lecture="never"' > "$SUDOERS_DIR/docker1" \
  && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_DIR/docker1" \
- && echo 'Defaults env_keep = "DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' > "$SUDOERS_DIR/docker2" \
+ && echo 'Defaults env_keep = "SUDOERS_DIR DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' > "$SUDOERS_DIR/docker2" \
  && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/readenvironment.sh" >> "$SUDOERS_DIR/docker2" \
     && chmod u=rw,go= "$SUDOERS_DIR/*" \
     && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh"
