@@ -41,21 +41,18 @@ tolower(){
 }
 
 readonly SUDOS_DIR="$(/usr/bin/dirname $0)"
-readonly SU_ENVIRONMENT_FILE="$SUDOS_DIR/su_environment"
-environment="$(/bin/cat "$SU_ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
+readonly BUILDTIME_ENVIRONMENT="$SUDOS_DIR/buildtime_environment"
+environment="$(/bin/cat "$BUILDTIME_ENVIRONMENT" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
 readonly SUDOERS_FILE="$(var - SUDOERS_FILE)"
 readonly BIN_DIR="$(var - BIN_DIR)"
 readonly USER="$(var - USER)"
 readonly CONFIG_FILE="$(var - CONFIG_FILE)"
-readonly USER_ENVIRONMENT_FILE="$SUDOS_DIR/user_environment"
- #  /bin/rm "$BIN_DIR/sudo"
- #   /bin/rm "$SUDOERS_FILE"
-
-if [ -f "$USER_ENVIRONMENT_FILE" ]
+readonly RUNTIME_ENVIRONMENT="$SUDOS_DIR/runtime_environment"
+if [ -f "$RUNTIME_ENVIRONMENT" ]
 then
    IFS=$(echo -en "\n\b,")
-   readonly environment="$(/bin/cat "$SU_ENVIRONMENT_FILE" "$USER_ENVIRONMENT_FILE" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
-   /bin/rm "$USER_ENVIRONMENT_FILE"
+   readonly environment="$(/bin/cat "$BUILDTIME_ENVIRONMENT" "$RUNTIME_ENVIRONMENT" | /usr/bin/tr -dc '[:alnum:]_ %,\052\055.=/\012')"
+   /bin/rm "$RUNTIME_ENVIRONMENT"
  #  /bin/rm -rf "$SUDOS_DIR"
    if [ ! -s "$CONFIG_FILE" ]
    then
@@ -127,5 +124,6 @@ then
    fi
    readonly param_unix_socket_dir="$(var param unix_socket_dir)"
    makedir "$param_unix_socket_dir"
+   chmod g+rw "$param_unix_socket_dir"
 fi
 exec /usr/bin/env -i "$BIN_DIR/sudo" -u $USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
