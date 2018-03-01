@@ -9,7 +9,7 @@ ENV CONFIG_DIR="/etc/pgbouncer"
 ENV BUILDTIME_ENVIRONMENT="$SUDOS_DIR/buildtime_environment" \
     RUNTIME_ENVIRONMENT="$SUDOS_DIR/runtime_environment" \
     CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
-    SUDOERS_FILE="/etc/sudoers.d/docker" \
+    SUDOERS_DIR="/etc/sudoers.d" \
     USER="pgbouncer"
 
 RUN addgroup -S $USER \
@@ -40,11 +40,11 @@ RUN addgroup -S $USER \
     && chmod u=rw,g=r,o= "$CONFIG_FILE" \
  && apk --no-cache add libssl1.0 libevent sudo \
  && ln /usr/bin/sudo "$BIN_DIR/sudo" \
- && echo 'Defaults lecture="never"' > "$SUDOERS_FILE" \
- && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_FILE" \
- && echo 'Defaults env_keep = "DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' >> "$SUDOERS_FILE" \
- && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/readenvironment.sh" >> "$SUDOERS_FILE" \
-    && chmod u=rw,go= "$SUDOERS_FILE" \
+ && echo 'Defaults lecture="never"' > "$SUDOERS_DIR/docker1" \
+ && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_DIR/docker1" \
+ && echo 'Defaults env_keep = "DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' >> "$SUDOERS_DIR/docker2" \
+ && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/readenvironment.sh" >> "$SUDOERS_DIR/docker2" \
+    && chmod u=rw,go= "$SUDOERS_DIR/*" \
     && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh"
 
 USER ${USER}
