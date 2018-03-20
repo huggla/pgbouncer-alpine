@@ -22,9 +22,6 @@ then
       readonly DATABASES="$(var - DATABASES)"
       for db in $DATABASES
       do
-      echo "$db"
-         db="$(trim "$db")"
-         echo "$db"
          echo "$db" >> "$CONFIG_FILE"
       done
       echo >> "$CONFIG_FILE"
