@@ -1,26 +1,43 @@
 FROM alpine:3.7
 
-ENV BIN_DIR="/usr/local/bin"
+# Image-specific NAME variable.
+# ---------------------------------------------------------------------
+ENV NAME="pgbouncer"
+# ---------------------------------------------------------------------
+
+ENV BIN_DIR="/usr/local/bin" \
+    SUDOERS_DIR="/etc/sudoers.d" \
+    CONFIG_DIR="/etc/$NAME"
+ENV BUILDTIME_ENVIRONMENT="$BIN_DIR/buildtime_environment" \
+    RUNTIME_ENVIRONMENT="$BIN_DIR/runtime_environment"
+
+# Image-specific buildtime environment variables, prefixed with "BEV_".
+# ---------------------------------------------------------------------
+ENV BEV_CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini"
+# ---------------------------------------------------------------------
 
 COPY ./bin ${BIN_DIR}
-
-ENV SUDOS_DIR="$BIN_DIR/sudos"
-ENV CONFIG_DIR="/etc/pgbouncer"
-ENV BUILDTIME_ENVIRONMENT="$SUDOS_DIR/buildtime_environment" \
-    RUNTIME_ENVIRONMENT="$SUDOS_DIR/runtime_environment" \
-    CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
-    SUDOERS_DIR="/etc/sudoers.d" \
-    USER="pgbouncer"
-
-RUN addgroup -S $USER \
- && adduser -D -S -H -s /bin/false -u 100 -G $USER $USER \
-    && chmod go= /bin /sbin /usr/bin /usr/sbin \
- && env > "$BUILDTIME_ENVIRONMENT" \
+    
+RUN env | grep "^BEV_" > "$BUILDTIME_ENVIRONMENT" \
+ && addgroup -S $NAME \
+ && adduser -D -S -H -s /bin/false -u 100 -G $NAME $NAME \
  && touch "$RUNTIME_ENVIRONMENT" \
-    && chmod u=rw,go= "$BUILDTIME_ENVIRONMENT" \
-    && chown root:$USER "$RUNTIME_ENVIRONMENT" \
-    && chmod u=rw,g=w,o= "$RUNTIME_ENVIRONMENT" \
- && apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
+ && apk add --no-cache sudo \
+ && echo 'Defaults lecture="never"' > "$SUDOERS_DIR/docker1" \
+ && echo "Defaults secure_path = \"$BIN_DIR\"" >> "$SUDOERS_DIR/docker1" \
+ && echo 'Defaults env_keep = "REV_*"' > "$SUDOERS_DIR/docker2" \
+ && echo "$NAME ALL=(root) NOPASSWD: $BIN_DIR/start" >> "$SUDOERS_DIR/docker2" \
+ && chmod go= /bin /sbin /usr/bin /usr/sbin \
+ && chmod u=rx,go= "$BIN_DIR/"* \
+ && chmod u=rw,go= "$BUILDTIME_ENVIRONMENT" \
+ && chown root:$USER "$RUNTIME_ENVIRONMENT" \
+ && chmod u=rw,g=w,o= "$RUNTIME_ENVIRONMENT" \
+ && chmod u=rw,go= "$SUDOERS_DIR/docker"* \
+ && ln /usr/bin/sudo "$BIN_DIR/sudo"
+
+# Image-specific RUN commands.
+# ---------------------------------------------------------------------
+RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev  \
  && wget -O /tmp/pgbouncer-1.8.1.tar.gz https://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
  && cd /tmp \
  && tar xvfz /tmp/pgbouncer-1.8.1.tar.gz \
@@ -31,30 +48,23 @@ RUN addgroup -S $USER \
  && cd /tmp \
  && rm -rf /tmp/pgbouncer* \
  && apk del build-dependencies \
-    && chown root:$USER "$BIN_DIR/pgbouncer" \
-    && chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \
- && mkdir -p "$CONFIG_DIR" \
- && touch "$CONFIG_FILE" \
-    && chown root:$USER "$CONFIG_DIR" "$CONFIG_FILE" \
-    && chmod u=rx,g=rx,o= "$CONFIG_DIR" \
-    && chmod u=rw,g=r,o= "$CONFIG_FILE" \
- && apk --no-cache add libssl1.0 libevent sudo \
- && ln /usr/bin/sudo "$BIN_DIR/sudo" \
- && echo 'Defaults lecture="never"' > "$SUDOERS_DIR/docker1" \
- && echo "Defaults secure_path = \"$SUDOS_DIR\"" >> "$SUDOERS_DIR/docker1" \
- && echo 'Defaults env_keep = "SUDOERS_DIR DATABASES DATABASE_USERS param_* AUTH_HBA password_*"' > "$SUDOERS_DIR/docker2" \
- && echo "$USER ALL=(root) NOPASSWD: $SUDOS_DIR/readenvironment.sh" >> "$SUDOERS_DIR/docker2" \
-    && chmod u=rw,go= "$SUDOERS_DIR/docker"* \
-    && chmod u=rx,go= "$SUDOS_DIR/readenvironment.sh" "$SUDOS_DIR/initpgbouncer.sh"
+ && chown root:$USER "$BIN_DIR/pgbouncer" \
+ && chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \
+ && apk --no-cache add libssl1.0 libevent
+# ---------------------------------------------------------------------
+    
+USER ${NAME}
 
-USER ${USER}
+# Image-specific runtime environment variables, prefixed with "REV_".
+# ---------------------------------------------------------------------
+ENV REV_DATABASES="*=port=5432" \
+    REV_DATABASE_USERS="" \
+    REV_param_auth_file="$CONFIG_DIR/userlist.txt" \
+    REV_param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
+    REV_param_unix_socket_dir="/run/pgbouncer" \
+    REV_param_listen_addr="*"
+# ---------------------------------------------------------------------
 
-ENV PATH="$BIN_DIR:$SUDOS_DIR" \
-    DATABASES="*=port=5432" \
-    DATABASE_USERS="" \
-    param_auth_file="$CONFIG_DIR/userlist.txt" \
-    param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
-    param_unix_socket_dir="/run/pgbouncer" \
-    param_listen_addr="*"
+ENV PATH="$BIN_DIR"
 
-CMD ["sudo","readenvironment.sh"]
+CMD ["sudo","start"]
