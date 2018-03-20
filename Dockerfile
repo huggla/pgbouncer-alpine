@@ -1,6 +1,6 @@
 FROM alpine:3.7
 
-# Image-specific NAME variable.
+# Image-specific BEV_NAME variable.
 # ---------------------------------------------------------------------
 ENV BEV_NAME="pgbouncer"
 # ---------------------------------------------------------------------
@@ -30,7 +30,7 @@ RUN env | grep "^BEV_" > "$BUILDTIME_ENVIRONMENT" \
  && chmod go= /bin /sbin /usr/bin /usr/sbin \
  && chmod u=rx,go= "$BIN_DIR/"* \
  && chmod u=rw,go= "$BUILDTIME_ENVIRONMENT" \
- && chown root:$USER "$RUNTIME_ENVIRONMENT" \
+ && chown root:$BEV_NAME "$RUNTIME_ENVIRONMENT" \
  && chmod u=rw,g=w,o= "$RUNTIME_ENVIRONMENT" \
  && chmod u=rw,go= "$SUDOERS_DIR/docker"* \
  && ln /usr/bin/sudo "$BIN_DIR/sudo"
