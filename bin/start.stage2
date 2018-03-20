@@ -4,6 +4,8 @@ set -e +a +m +s +i -f
 readonly BIN_DIR="$(/usr/bin/dirname $0)"
 . "$(/usr/bin/dirname "$0")/start.stage2.functions"
 env_list="$(listfromfile "$BIN_DIR/buildtime_environment")"
+readonly NAME="$(var - NAME)"
+readonly CONFIG_FILE="$(var - CONFIG_FILE)"
 readonly RUNTIME_ENVIRONMENT="$BIN_DIR/runtime_environment"
 if [ -f "$RUNTIME_ENVIRONMENT" ]
 then
@@ -15,7 +17,6 @@ then
 # Image-specific code
 # --------------------------------------------
    IFS="${IFS},"
-   CONFIG_FILE="$(var - CONFIG_FILE)"
    if [ ! -s "$CONFIG_FILE" ]
    then
       echo "[databases]" > "$CONFIG_FILE"
@@ -85,4 +86,4 @@ then
    readonly param_unix_socket_dir="$(var param unix_socket_dir)"
    chmod g+rw "$param_unix_socket_dir"
 fi
-exec /usr/bin/env -i "$BIN_DIR/sudo" -u $USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
+exec /usr/bin/env -i "$BIN_DIR/sudo" -u $NAME "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
