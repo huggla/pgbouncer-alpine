@@ -2,12 +2,12 @@ FROM alpine:3.7
 
 # Image-specific NAME variable.
 # ---------------------------------------------------------------------
-ENV NAME="pgbouncer"
+ENV BEV_NAME="pgbouncer"
 # ---------------------------------------------------------------------
 
 ENV BIN_DIR="/usr/local/bin" \
     SUDOERS_DIR="/etc/sudoers.d" \
-    CONFIG_DIR="/etc/$NAME"
+    CONFIG_DIR="/etc/$BEV_NAME"
 ENV BUILDTIME_ENVIRONMENT="$BIN_DIR/buildtime_environment" \
     RUNTIME_ENVIRONMENT="$BIN_DIR/runtime_environment"
 
@@ -19,14 +19,14 @@ ENV BEV_CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini"
 COPY ./bin ${BIN_DIR}
     
 RUN env | grep "^BEV_" > "$BUILDTIME_ENVIRONMENT" \
- && addgroup -S $NAME \
- && adduser -D -S -H -s /bin/false -u 100 -G $NAME $NAME \
+ && addgroup -S $BEV_NAME \
+ && adduser -D -S -H -s /bin/false -u 100 -G $BEV_NAME $BEV_NAME \
  && touch "$RUNTIME_ENVIRONMENT" \
  && apk add --no-cache sudo \
  && echo 'Defaults lecture="never"' > "$SUDOERS_DIR/docker1" \
  && echo "Defaults secure_path = \"$BIN_DIR\"" >> "$SUDOERS_DIR/docker1" \
  && echo 'Defaults env_keep = "REV_*"' > "$SUDOERS_DIR/docker2" \
- && echo "$NAME ALL=(root) NOPASSWD: $BIN_DIR/start" >> "$SUDOERS_DIR/docker2" \
+ && echo "$BEV_NAME ALL=(root) NOPASSWD: $BIN_DIR/start" >> "$SUDOERS_DIR/docker2" \
  && chmod go= /bin /sbin /usr/bin /usr/sbin \
  && chmod u=rx,go= "$BIN_DIR/"* \
  && chmod u=rw,go= "$BUILDTIME_ENVIRONMENT" \
@@ -48,12 +48,12 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && cd /tmp \
  && rm -rf /tmp/pgbouncer* \
  && apk del build-dependencies \
- && chown root:$USER "$BIN_DIR/pgbouncer" \
+ && chown root:$BEV_NAME "$BIN_DIR/pgbouncer" \
  && chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \
  && apk --no-cache add libssl1.0 libevent
 # ---------------------------------------------------------------------
     
-USER ${NAME}
+USER ${BEV_NAME}
 
 # Image-specific runtime environment variables, prefixed with "REV_".
 # ---------------------------------------------------------------------
