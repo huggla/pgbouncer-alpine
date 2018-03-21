@@ -16,7 +16,7 @@ then
 
 # Image-specific code
 # --------------------------------------------
-   IFS="${IFS},"
+   IFS=$(echo -en "\n\b,")
    if [ ! -s "$CONFIG_FILE" ]
    then
       echo "[databases]" > "$CONFIG_FILE"
