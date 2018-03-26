@@ -58,11 +58,9 @@ then
       for user in $DATABASE_USERS
       do
          user="$(trim "$user")"
-         makepwfile
-         echo "\"$user\" \"$(/bin/cat "$pwfile")\"" >> "$param_auth_file"
-         set +e
-         /bin/rm -f "$pwfile"
-         set -e
+         userpwfile="$(makepwfile $user)"
+         echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$param_auth_file"
+         trydeletefile "$userpwfile"
       done
    fi
    readonly param_unix_socket_dir="$(var param unix_socket_dir)"
