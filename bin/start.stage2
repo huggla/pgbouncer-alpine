@@ -47,7 +47,7 @@ then
          readonly AUTH_HBA="$(var - AUTH_HBA)"
          for hba in $AUTH_HBA
          do
-            trim $hba >> "$param_auth_hba_file"
+            trim "$hba" >> "$param_auth_hba_file"
          done
       fi
    fi
