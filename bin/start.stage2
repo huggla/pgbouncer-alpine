@@ -62,7 +62,7 @@ then
       for user in $DATABASE_USERS
       do
          user="$(trim "$user")"
-         userpwfile="$(makepwfile)"
+         userpwfile="$(makepwfileforuser "$user")"
          echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$param_auth_file"
          trydeletefile "$userpwfile"
       done
