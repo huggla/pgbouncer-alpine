@@ -76,6 +76,4 @@ ENV REV_DATABASES="*=port=5432" \
     REV_param_listen_addr="*"
 # ---------------------------------------------------------------------
 
-ENV PATH="$BIN_DIR"
-
 CMD ["sudo","start"]
