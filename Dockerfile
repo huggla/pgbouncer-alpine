@@ -26,7 +26,6 @@ RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-de
  && cd / \
  && rm -rf "$buildDir" \
  && apk del build-dependencies \
-# && chown root:$BEV_NAME "$BIN_DIR/pgbouncer" \
  && apk --no-cache add libssl1.0 libevent
  
 USER sudoer
