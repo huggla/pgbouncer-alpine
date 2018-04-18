@@ -1,26 +1,16 @@
-#!/bin/sh
-set -e +a +m +s +i -f
+# Set in parent script:
+# ---------------------------------------------------------
+# set -e +a +m +s +i -f
+# readonly IFS_bak=$IFS
+# readonly BIN_DIR="$(/usr/bin/dirname "$0")"
+# . "$BIN_DIR/start.stage2.functions"
+# readonly LINUX_USER="$(var - LINUX_USER)"
+# readonly CONFIG_FILE="$(var - CONFIG_FILE)"
+# ---------------------------------------------------------
 
-readonly BIN_DIR="$(/usr/bin/dirname "$0")"
-readonly BUILDTIME_ENVIRONMENT="$BIN_DIR/buildtime_environment"
-readonly RUNTIME_ENVIRONMENT="$BIN_DIR/runtime_environment"
-. "$BIN_DIR/start.stage2.functions"
-env_list="$(listfromfile "$BUILDTIME_ENVIRONMENT")"
-readonly NAME="$(var - NAME)"
-readonly CONFIG_FILE="$(var - CONFIG_FILE)"
-if [ -n "$CONFIG_FILE" ]
+readonly env_list
+if [ "$restart" == "false" ]
 then
-   readonly CONFIG_DIR="$(/usr/bin/dirname "$CONFIG_FILE")"
-fi
-if [ -f "$RUNTIME_ENVIRONMENT" ]
-then
-   env_list="$env_list"$'\n'"$(listfromfile "$RUNTIME_ENVIRONMENT")"
-   makeallfromenvlist
-   /bin/rm "$RUNTIME_ENVIRONMENT"
-
-# Image-specific code
-# --------------------------------------------
-   readonly env_list
    IFS=$(echo -en "\n\b,")
    if [ ! -s "$CONFIG_FILE" ]
    then
@@ -70,5 +60,6 @@ then
    fi
    readonly param_unix_socket_dir="$(var param unix_socket_dir)"
    chmod g+rw "$param_unix_socket_dir"
+   IFS=$IFS_bak
 fi
-exec /usr/bin/env -i "$BIN_DIR/sudo" -u $NAME "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
+exec /usr/bin/env -i "/usr/local/sbin/sudo" -u $LINUX_USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
