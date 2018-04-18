@@ -2,7 +2,7 @@ FROM huggla/alpine
 
 ENV CONFIG_DIR="/etc/pgbouncer"
 
-ENV REV_LINUX_USER="pgbouncer" \
+ENV REV_LINUX_USER="postgres" \
     REV_CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
     REV_DATABASES="*=port=5432" \
     REV_DATABASE_USERS="" \
