@@ -55,7 +55,7 @@ then
          user="$(trim "$user")"
          userpwfile="$(makepwfileforuser "$user")"
          echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$param_auth_file"
-         trydeletefile "$userpwfile"
+         trydelete "$userpwfile"
       done
    fi
    readonly param_unix_socket_dir="$(var param unix_socket_dir)"
