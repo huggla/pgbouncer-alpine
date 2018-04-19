@@ -58,10 +58,6 @@ then
          trydelete "$userpwfile"
       done
    fi
-   readonly param_unix_socket_dir="$(var param unix_socket_dir)"
-   set +f +e
-   /bin/chown $LINUX_USER "$param_unix_socket_dir/"*
-   set -f -e
    IFS=$IFS_bak
 fi
 exec /usr/bin/env -i "/usr/local/sbin/sudo" -u $LINUX_USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
