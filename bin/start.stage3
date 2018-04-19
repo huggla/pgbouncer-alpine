@@ -60,4 +60,8 @@ then
    fi
    IFS=$IFS_bak
 fi
+if [ -f "$BIN_DIR/start.stage4" ]
+then
+   . "$BIN_DIR/start.stage4"
+fi
 exec /usr/bin/env -i "/usr/local/sbin/sudo" -u $LINUX_USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
