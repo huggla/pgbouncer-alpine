@@ -21,4 +21,4 @@ A secure and minimal docker image with Pgbouncer. Listens by default on port 643
 * REV_password_&lt;user name from DATABASE_USERS&gt;: The password for named user. Slightly less secure.
 
 ## Capabilities
-Can drop all but CHOWN, SETGID and SETUID.
+Can drop all but CHOWN, FOWNER, SETGID and SETUID.
