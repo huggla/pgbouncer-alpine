@@ -16,7 +16,7 @@ COPY ./bin ${BIN_DIR}
 RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev \
  && buildDir="$(mktemp -d)" \
  && cd "$buildDir" \
- && wget -O pgbouncer-1.8.1.tar.gz https://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
+ && wget -O pgbouncer-1.8.1.tar.gz http://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
  && tar xvfz pgbouncer-1.8.1.tar.gz \
  && cd pgbouncer-1.8.1 \
  && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
