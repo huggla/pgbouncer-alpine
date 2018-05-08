@@ -36,9 +36,9 @@ then
       for user in $VAR_DATABASE_USERS
       do
          user="$(trim "$user")"
-         userpwfile="$(makepwfileforuser "$user")"
+         userpwfile="$(makePwFileForUser "$user")"
          echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$VAR_param_auth_file"
-         trydelete "$userpwfile"
+         tryDelete "$userpwfile"
       done
    fi
    IFS=$IFS_bak
