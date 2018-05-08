@@ -18,27 +18,15 @@ then
       done
       echo >> "$VAR_CONFIG_FILE"
       echo "[pgbouncer]" >> "$VAR_CONFIG_FILE"
-      configFromVarGroup param >> "$VAR_CONFIG_FILE"
-      for param in $pgbouncer_parameters
-      do
-         param_value="$(var param $param)"
-         if [ -n "$param_value" ]
-         then
-            echo -n "$param" >> "$CONFIG_FILE"
-            echo "=$param_value" >> "$CONFIG_FILE"
-         fi
-      done
+      configFromVarGroup param noUnderscore >> "$VAR_CONFIG_FILE"
    fi
-   readonly param_auth_type="$(var param auth_type)"
-   if [ "$param_auth_type" == "hba" ]
+   if [ "$VAR_param_auth_type" == "hba" ]
    then
-      readonly param_auth_hba_file="$(var param auth_hba_file)"
-      if [ ! -s "$param_auth_hba_file" ]
+      if [ ! -s "$VAR_param_auth_hba_file" ]
       then
-         readonly AUTH_HBA="$(var - AUTH_HBA)"
-         for hba in $AUTH_HBA
+         for hba in $VAR_AUTH_HBA
          do
-            trim "$hba" >> "$param_auth_hba_file"
+            trim "$hba" >> "$VAR_param_auth_hba_file"
          done
       fi
    fi
