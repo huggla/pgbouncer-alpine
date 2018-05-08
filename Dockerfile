@@ -32,4 +32,4 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_param_listen_addr="*" \
     VAR_FINAL_COMMAND="/usr/local/bin/pgbouncer \$VAR_CONFIG_FILE"
  
-USER sudoer
+USER starter
