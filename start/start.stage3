@@ -1,28 +1,24 @@
-# Set in parent script:
+# Passed from stage2:
 # ---------------------------------------------------------
 # set -e +a +m +s +i -f
-# readonly IFS_bak=$IFS
-# readonly BIN_DIR="$(/usr/bin/dirname "$0")"
-# . "$BIN_DIR/start.stage2.functions"
-# readonly LINUX_USER="$(var - LINUX_USER)"
-# readonly CONFIG_FILE="$(var - CONFIG_FILE)"
+# . /start/stage2.functions
+# firstrun
+# VAR_*
 # ---------------------------------------------------------
 
-readonly env_list
-if [ "$restart" == "false" ]
+if [ "$firstrun" == "true" ]
 then
    IFS=$(echo -en "\n\b,")
-   if [ ! -s "$CONFIG_FILE" ]
+   if [ ! -s "$VAR_CONFIG_FILE" ]
    then
-      echo "[databases]" > "$CONFIG_FILE"
-      readonly DATABASES="$(var - DATABASES)"
-      for db in $DATABASES
+      echo "[databases]" > "$VAR_CONFIG_FILE"
+      for db in $VAR_DATABASES
       do
-         echo "$db" >> "$CONFIG_FILE"
+         echo "$db" >> "$VAR_CONFIG_FILE"
       done
-      echo >> "$CONFIG_FILE"
-      echo "[pgbouncer]" >> "$CONFIG_FILE"
-      readonly pgbouncer_parameters="$(var param)"
+      echo >> "$VAR_CONFIG_FILE"
+      echo "[pgbouncer]" >> "$VAR_CONFIG_FILE"
+      configFromVarGroup param >> "$VAR_CONFIG_FILE"
       for param in $pgbouncer_parameters
       do
          param_value="$(var param $param)"
