@@ -19,7 +19,6 @@ RUN apk --no-cache add libssl1.0 libevent \
  && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
  && make \
  && mv ./pgbouncer /usr/local/bin/pgbouncer \
- && chmod ug=rx,o= /usr/local/bin/pgbouncer \
  && cd / \
  && rm -rf "$buildDir" \
  && apk del .build-dependencies
