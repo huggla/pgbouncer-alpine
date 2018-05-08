@@ -3,6 +3,7 @@
 # set -e +a +m +s +i -f
 # . /start/stage2.functions
 # firstrun
+# IFS_bak
 # VAR_*
 # ---------------------------------------------------------
 
@@ -30,22 +31,15 @@ then
          done
       fi
    fi
-   readonly param_auth_file="$(var param auth_file)"
-   if [ ! -s "$param_auth_file" ]
+   if [ ! -s "$VAR_param_auth_file" ]
    then
-      readonly DATABASE_USERS="$(echo "$(var - DATABASE_USERS)" | /usr/bin/awk '{$1=$1;print}')"
-      for user in $DATABASE_USERS
+      for user in $VAR_DATABASE_USERS
       do
          user="$(trim "$user")"
          userpwfile="$(makepwfileforuser "$user")"
-         echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$param_auth_file"
+         echo "\"$user\" \"$(/bin/cat "$userpwfile")\"" >> "$VAR_param_auth_file"
          trydelete "$userpwfile"
       done
    fi
    IFS=$IFS_bak
 fi
-if [ -f "$BIN_DIR/start.stage4" ]
-then
-   . "$BIN_DIR/start.stage4"
-fi
-exec /usr/bin/env -i "/usr/local/sbin/sudo" -u $LINUX_USER "$BIN_DIR/pgbouncer" "$CONFIG_FILE"
