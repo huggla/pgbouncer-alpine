@@ -1,6 +1,28 @@
 FROM huggla/alpine
 
-ENV CONFIG_DIR="/etc/pgbouncer"
+USER root
+
+# Build-only variables
+ENV PGBOUNCER_VERSION="1.8.1" \
+    CONFIG_DIR="/etc/pgbouncer"
+
+COPY ./start /start
+
+RUN apk --no-cache add --virtual .build-dependencies make libevent-dev openssl-dev gcc libc-dev \
+ && downloadDir="$(mktemp -d)" \
+ && wget -O "$downloadDir/pgbouncer.tar.gz" https://pgbouncer.github.io/downloads/files/$PGBOUNCER_VERSION/pgbouncer-$PGBOUNCER_VERSION.tar.gz \
+ && tar xvfz "$downloadDir/pgbouncer.tar.gz" \
+  && buildDir="$(mktemp -d)" \
+ && cd "$buildDir" \
+ && cd pgbouncer-1.8.1 \
+ && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
+ && make \
+ && mv pgbouncer "$BIN_DIR/pgbouncer" \
+ && chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \
+ && cd / \
+ && rm -rf "$buildDir" \
+ && apk del .build-dependencies \
+ && apk --no-cache add libssl1.0 libevent
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
@@ -11,21 +33,8 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_param_unix_socket_dir="/run/pgbouncer" \
     VAR_param_listen_addr="*"
 
-COPY ./bin ${BIN_DIR}
 
-RUN apk --no-cache add --virtual build-dependencies make libevent-dev openssl-dev gcc libc-dev \
- && buildDir="$(mktemp -d)" \
- && cd "$buildDir" \
- && wget -O pgbouncer-1.8.1.tar.gz http://pgbouncer.github.io/downloads/files/1.8.1/pgbouncer-1.8.1.tar.gz \
- && tar xvfz pgbouncer-1.8.1.tar.gz \
- && cd pgbouncer-1.8.1 \
- && ./configure --prefix=/usr/local --with-libevent=libevent-prefix \
- && make \
- && mv pgbouncer "$BIN_DIR/pgbouncer" \
- && chmod u=rx,g=rx,o= "$BIN_DIR/pgbouncer" \
- && cd / \
- && rm -rf "$buildDir" \
- && apk del build-dependencies \
- && apk --no-cache add libssl1.0 libevent
+
+
  
 USER sudoer
