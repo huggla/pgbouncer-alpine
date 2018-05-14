@@ -2,12 +2,12 @@
 # ---------------------------------------------------------
 # set -e +a +m +s +i -f
 # . /start/stage2.functions
-# firstrun
+# isFirstRun
 # IFS_bak
 # VAR_*
 # ---------------------------------------------------------
 
-if [ "$firstrun" == "true" ]
+if [ "$isFirstRun" == "true" ]
 then
    IFS=$(echo -en "\n\b,")
    if [ ! -s "$VAR_CONFIG_FILE" ]
