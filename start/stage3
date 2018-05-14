@@ -41,5 +41,4 @@ then
          tryDelete "$userPwFile"
       done
    fi
-   IFS=$IFS_bak
 fi
