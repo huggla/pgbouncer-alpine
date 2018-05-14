@@ -38,7 +38,7 @@ then
          user="$(trim "$user")"
          local userPwFile="$(makePwFileForUser "$user")"
          local pw
-         read pw < "$userPwFile"
+         echo $userPwFile | read pw
          echo "\"$user\" \"$pw\"" >> "$VAR_param_auth_file"
          tryDelete "$userPwFile"
       done
