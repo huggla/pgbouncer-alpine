@@ -36,7 +36,7 @@ then
       for user in $VAR_DATABASE_USERS
       do
          user="$(trim "$user")"
-         userPwFile="$(makePwFileForUser "$user")"
+         local userPwFile="$(makePwFileForUser "$user")"
          echo "\"$user\" \"$(/bin/cat "$userPwFile")\"" >> "$VAR_param_auth_file"
          tryDelete "$userPwFile"
       done
