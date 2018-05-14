@@ -28,7 +28,7 @@ ENV VAR_LINUX_USER="postgres" \
     VAR_DATABASES="*=port=5432" \
     VAR_param_auth_file="$CONFIG_DIR/userlist.txt" \
     VAR_param_auth_hba_file="$CONFIG_DIR/pg_hba.conf" \
-    VAR_param_unix_socket_dir="/var/run/pgbouncer" \
+    VAR_param_unix_socket_dir="/run/pgbouncer" \
     VAR_param_listen_addr="*" \
     VAR_FINAL_COMMAND="/usr/local/bin/pgbouncer \$VAR_CONFIG_FILE"
  
