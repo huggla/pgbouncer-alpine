@@ -9,7 +9,7 @@
 
 if [ "$isFirstRun" == "true" ]
 then
-   IFS=$(echo -en "\n\b,")
+   local IFS=$(echo -en "\n\b,")
    if [ ! -s "$VAR_CONFIG_FILE" ]
    then
       echo "[databases]" > "$VAR_CONFIG_FILE"
