@@ -33,11 +33,12 @@ then
    fi
    if [ ! -s "$VAR_param_auth_file" ]
    then
+      local userPwFile=""
+      local pw=""
       for user in $VAR_DATABASE_USERS
       do
          user="$(trim "$user")"
-         local userPwFile="$(makePwFileForUser "$user")"
-         local pw
+         userPwFile="$(makePwFileForUser "$user")"
          echo $userPwFile | read pw
          echo "\"$user\" \"$pw\"" >> "$VAR_param_auth_file"
          tryDelete "$userPwFile"
