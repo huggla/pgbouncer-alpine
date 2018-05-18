@@ -4,7 +4,6 @@
 # . /start/stage2.functions
 # isFirstRun
 # VAR_*
-# ---------------------------------------------------------
 
 if [ "$isFirstRun" == "true" ]
 then
