@@ -1,3 +1,10 @@
+# Passed from stage2:
+# ---------------------------------------------------------
+# set -e +a +m +s +i -f
+# . /start/stage2.functions
+# isFirstRun
+# VAR_*
+
 initPgbouncer(){
    local IFS=$(echo -en "\n\b,")
    if [ ! -s "$VAR_CONFIG_FILE" ]
