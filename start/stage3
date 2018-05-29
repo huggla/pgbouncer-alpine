@@ -1,45 +1,11 @@
 # Passed from stage2:
 # ---------------------------------------------------------
 # set -e +a +m +s +i -f
-# . /start/stage2.functions
 # isFirstRun
-# VAR_*
+
+. /start/stage3.function
 
 if [ "$isFirstRun" == "true" ]
 then
-   local IFS=$(echo -en "\n\b,")
-   if [ ! -s "$VAR_CONFIG_FILE" ]
-   then
-      echo "[databases]" > "$VAR_CONFIG_FILE"
-      for db in $VAR_DATABASES
-      do
-         echo "$db" >> "$VAR_CONFIG_FILE"
-      done
-      echo >> "$VAR_CONFIG_FILE"
-      echo "[pgbouncer]" >> "$VAR_CONFIG_FILE"
-      configFromVarGroup param >> "$VAR_CONFIG_FILE"
-   fi
-   if [ "$VAR_param_auth_type" == "hba" ]
-   then
-      if [ ! -s "$VAR_param_auth_hba_file" ]
-      then
-         for hba in $VAR_AUTH_HBA
-         do
-            trim "$hba" >> "$VAR_param_auth_hba_file"
-         done
-      fi
-   fi
-   if [ ! -s "$VAR_param_auth_file" ]
-   then
-      local userPwFile=""
-      local pw=""
-      for user in $VAR_DATABASE_USERS
-      do
-         user="$(trim "$user")"
-         userPwFile="$(makePwFileForUser "$user")"
-         echo $userPwFile | read pw
-         echo "\"$user\" \"$pw\"" >> "$VAR_param_auth_file"
-         tryDelete "$userPwFile"
-      done
-   fi
+   initPgbouncer
 fi
