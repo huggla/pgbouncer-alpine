@@ -23,6 +23,8 @@ RUN apk --no-cache add libssl1.0 libevent \
 
 FROM huggla/alpine
 
+USER root
+
 COPY ./start /start
 COPY --from=tmp /usr/local/bin/pgbouncer /usr/local/bin/pgbouncer
 
