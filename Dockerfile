@@ -1,10 +1,12 @@
-FROM huggla/alpine as tmp
+FROM huggla/alpine
 
 USER root
 
 # Build-only variables
 ENV PGBOUNCER_VERSION="1.8.1" \
     CONFIG_DIR="/etc/pgbouncer"
+
+COPY ./start /start
 
 RUN apk --no-cache add libssl1.0 libevent \
  && apk --no-cache add --virtual .build-dependencies make libevent-dev openssl-dev gcc libc-dev \
@@ -20,15 +22,6 @@ RUN apk --no-cache add libssl1.0 libevent \
  && cd / \
  && rm -rf "$buildDir" \
  && apk del .build-dependencies
-
-FROM huggla/alpine
-
-USER root
-
-COPY ./start /start
-COPY --from=tmp /usr/local/bin/pgbouncer /usr/local/bin/pgbouncer
-
-RUN apk --no-cache add libssl1.0 libevent
 
 ENV VAR_LINUX_USER="postgres" \
     VAR_CONFIG_FILE="$CONFIG_DIR/pgbouncer.ini" \
