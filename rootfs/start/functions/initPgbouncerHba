@@ -1,0 +1,6 @@
+initPgbouncerHba(){
+   for hba in $VAR_AUTH_HBA
+   do
+      trim "$hba" >> "$VAR_param_auth_hba_file"
+   done
+}
