@@ -1,0 +1,10 @@
+initPgbouncerUserlist(){
+   local userPwFile=""
+   local pw=""
+   for user in $VAR_DATABASE_USERS
+   do
+      user="$(trim "$user")"
+      pw="$(makePwForUser "$user")"
+      echo "\"$user\" \"$pw\"" >> "$VAR_param_auth_file"
+   done
+}
