@@ -1,0 +1,18 @@
+initPgbouncer(){
+   local IFS=$(echo -en "\n\b,")
+   if [ ! -s "$VAR_CONFIG_FILE" ]
+   then
+      initPgbouncerConfig
+   fi
+   if [ "$VAR_param_auth_type" == "hba" ]
+   then
+      if [ ! -s "$VAR_param_auth_hba_file" ]
+      then
+         initPgbouncerHba
+      fi
+   fi
+   if [ ! -s "$VAR_param_auth_file" ]
+   then
+      initPgbouncerUserlist
+   fi
+}
