@@ -1,0 +1,10 @@
+initPgbouncerConfig(){
+   echo "[databases]" > "$VAR_CONFIG_FILE"
+   for db in $VAR_DATABASES
+   do
+      echo "$db" >> "$VAR_CONFIG_FILE"
+   done
+   echo >> "$VAR_CONFIG_FILE"
+   echo "[pgbouncer]" >> "$VAR_CONFIG_FILE"
+   configFromVarGroup param >> "$VAR_CONFIG_FILE"
+}
