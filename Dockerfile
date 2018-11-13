@@ -1,6 +1,7 @@
 ARG TAG="20181113-edge"
 ARG RUNDEPS="pgbouncer"
 ARG EXECUTABLES="/usr/bin/pgbouncer"
+ARG REMOVEFILES="/etc/pgbouncer/pgbouncer.ini"
 
 #---------------Don't edit----------------
 FROM ${CONTENTIMAGE1:-scratch} as content1
