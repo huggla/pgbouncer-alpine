@@ -1,7 +1,7 @@
-**Note! I use Docker latest tag for development, which means that it isn't allways working. Date tags are stable.**
-
 # pgbouncer-alpine
 A secure and minimal docker image with Pgbouncer. Listens by default on port 6432.
+
+20181204: Pgbouncer 1.9.0
 
 ## Environment variables
 ### pre-set runtime variables
