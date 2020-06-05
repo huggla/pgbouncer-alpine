@@ -1,7 +1,5 @@
-# pgbouncer-alpine
-A secure and minimal docker image with Pgbouncer. Listens by default on port 6432.
-
-20181204: Pgbouncer 1.9.0, Alpine Edge
+# sam-pgbouncer
+Secure and Minimal Pgbouncer Docker-image. Listens by default on port 6432.
 
 ## Environment variables
 ### pre-set runtime variables
