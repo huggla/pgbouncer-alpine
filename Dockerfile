@@ -5,7 +5,7 @@
 # Init
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
-ARG SaM_VERSION="2.0.4"
+ARG SaM_VERSION="2.0.5"
 ARG IMAGETYPE="application"
 ARG RUNDEPS="pgbouncer"
 ARG EXECUTABLES="/usr/bin/pgbouncer"
